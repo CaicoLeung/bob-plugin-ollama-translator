@@ -1,0 +1,98 @@
+{
+  "identifier": "bob-plugin-ollama-translator",
+  "category": "translate",
+  "version": "3.0.0",
+  "name": "Ollama模型翻译",
+  "summary": "支持调用本地离线（亦可自定义外部api）Ollama模型进行翻译/解释",
+  "author": "Caico",
+  "homepage": "https://github.com/CaicoLeung/bob-plugin-ollama-translator",
+  "appcast": "https://raw.githubusercontent.com/CaicoLeung/bob-plugin-ollama-translator/main/appcast.json",
+  "minBobVersion": "1.8.0",
+  "options": [
+    {
+      "identifier": "pattern",
+      "type": "menu",
+      "title": "模式",
+      "defaultValue": "translate",
+      "desc": "选择翻译模式或解释模式",
+      "menuValues": [
+        {
+          "title": "翻译模式",
+          "value": "translate"
+        },
+        {
+          "title": "解释模式",
+          "value": "interpret"
+        }
+      ]
+    },
+    {
+      "identifier": "prompt",
+      "type": "text",
+      "title": "prompt",
+      "desc": "自定义prompt模式，在这里输入你的prompt。源语言为{sourceLang}，目标语言为{targetLang}，原文为{sourceText}。",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "请输入prompt"
+      }
+    },
+    {
+      "identifier": "apiUrl",
+      "type": "text",
+      "title": "API URL",
+      "desc": "自定义api url，不设置则使用内置api。",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "请输入api url"
+      }
+    },
+    {
+      "identifier": "apiKey",
+      "type": "text",
+      "title": "API KEY",
+      "desc": "填写了API URL时可能需要的API KEY",
+      "textConfig": {
+        "placeholderText": "请输入api key"
+      }
+    },
+    {
+      "identifier": "model",
+      "type": "menu",
+      "title": "模型",
+      "defaultValue": "llama3",
+      "desc": "选择Ollama模型, 确保你已经安装相应模型。",
+      "menuValues": [
+        {
+          "title": "llama3.1",
+          "value": "llama3.1"
+        },
+        {
+          "title": "llama3",
+          "value": "llama3"
+        },
+        {
+          "title": "qwen2",
+          "value": "qwen2"
+        },
+        {
+          "title": "gemma2",
+          "value": "gemma2"
+        },
+        {
+          "title": "自定义",
+          "value": "custom"
+        }
+      ]
+    },
+    {
+      "identifier": "customModel",
+      "type": "text",
+      "title": "自定义模型",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如: mistral"
+      },
+      "desc": "仅当模型为自定义时生效"
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+name: Bump Version and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Tag version (e.g., 1.0.0 or v1.0.0)"
+        required: true
+      message:
+        description: "Tag message"
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ github.token }}
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'GitHub Actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Determine tag version
+        id: determine_version
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          if [[ $VERSION != v* ]]; then
+            VERSION="v$VERSION"
+          fi
+          VERSION_NUMBER="${VERSION#v}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION_NUMBER=$VERSION_NUMBER" >> $GITHUB_ENV
+
+      - name: Update info.json
+        run: |
+          OLD_VERSION=$(grep '"version":' public/info.json | awk -F\" '{print $4}')
+          sed -i "s/$OLD_VERSION/${{ env.VERSION_NUMBER }}/" public/info.json
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install
+      - run: pnpm run build
+
+      - name: Package plugin
+        run: |
+          zip -j -r dist/bob-plugin-ollama-translator-v${{ env.VERSION_NUMBER }}.bobplugin ./dist/*
+          echo "Packaged file: dist/bob-plugin-ollama-translator-v${{ env.VERSION_NUMBER }}.bobplugin"
+
+      - name: Update appcast.json
+        env:
+          VERSION_NUMBER: ${{ env.VERSION_NUMBER }}
+          MESSAGE: ${{ github.event.inputs.message }}
+        run: |
+          python3 scripts/update_appcast.py "$VERSION_NUMBER" "$MESSAGE"
+
+      - name: Commit files
+        run: |
+          git commit -a -m 'chore: update appcast.json and info.json'
+
+      - name: Create tag
+        env:
+          VERSION: ${{ env.VERSION }}
+          MESSAGE: ${{ github.event.inputs.message }}
+        run: |
+          git tag -a "$VERSION" -m "$MESSAGE"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ github.token }}
+          tags: true
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          release_name: ${{ env.VERSION }}
+          repo_token: ${{ github.token }}
+          file: dist/bob-plugin-ollama-translator-${{ env.VERSION_NUMBER }}.bobplugin
+          asset_name: openai-translator-${{ env.VERSION_NUMBER }}.bobplugin
+          tag: ${{ env.VERSION }}
+          overwrite: true
+          body: ${{ github.event.inputs.message }}
