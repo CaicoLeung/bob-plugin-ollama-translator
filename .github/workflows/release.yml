@@ -88,8 +88,8 @@ jobs:
         with:
           release_name: ${{ env.VERSION }}
           repo_token: ${{ github.token }}
-          file: dist/bob-plugin-ollama-translator-${{ env.VERSION_NUMBER }}.bobplugin
-          asset_name: openai-translator-${{ env.VERSION_NUMBER }}.bobplugin
+          file: dist/bob-plugin-ollama-translator-v${{ env.VERSION_NUMBER }}.bobplugin
+          asset_name: openai-translator-v${{ env.VERSION_NUMBER }}.bobplugin
           tag: ${{ env.VERSION }}
           overwrite: true
           body: ${{ github.event.inputs.message }}
