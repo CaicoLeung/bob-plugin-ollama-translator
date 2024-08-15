@@ -1,4 +1,12 @@
 {
   "identifier": "bob-plugin-ollama-translator",
-  "versions": []
+  "versions": [
+    {
+      "version": "3.0.0",
+      "desc": "重构自动发布流程",
+      "sha256": "53bf5a658cac15b6703f6c4e0300f8686ddfe3560bf9476ddadff39c191ebde8",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/3.0.0/bob-plugin-ollama-translator-v3.0.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    }
+  ]
 }
