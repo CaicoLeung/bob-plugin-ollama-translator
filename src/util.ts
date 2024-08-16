@@ -1,5 +1,5 @@
-import { HTTP_ERROR_CODES } from './constants';
-import { HttpResponse, ServiceError, TextTranslateQuery } from '@bob-translate/types';
+import { HTTP_ERROR_CODES } from "./constants";
+import { HttpResponse, ServiceError, TextTranslateQuery } from "@bob-translate/types";
 
 export function generatePrompt(query: TextTranslateQuery) {
   const promptMaps: Record<string, string> = {
@@ -17,11 +17,11 @@ export function generatePrompt(query: TextTranslateQuery) {
 
 export function generateSystemPrompt() {
   const promptMaps: Record<string, string> = {
-    translate: 'You are a translation engine, translate directly without explanation and any explanatory content',
+    translate: "You are a translation engine, translate directly without explanation and any explanatory content",
     interpret:
-      'You are now a knowledgeable encyclopedia expert who can provide detailed information and explanations in various fields. Whether it is science, history, technology or culture, you can answer questions in a simple and easy-to-understand way and cite relevant materials and examples to help you understand.',
+      "You are now a knowledgeable encyclopedia expert who can provide detailed information and explanations in various fields. Whether it is science, history, technology or culture, you can answer questions in a simple and easy-to-understand way and cite relevant materials and examples to help you understand.",
   };
-  const pattern = $option.pattern || 'translate';
+  const pattern = $option.pattern || "translate";
   return promptMaps[pattern];
 }
 
@@ -34,16 +34,16 @@ export function generateSystemPrompt() {
  */
 export const parseStringTemplate = (template: string, data: Record<string, string>) => {
   return template.replace(/\{[^}]*\}/g, function (m) {
-    const key = m.replace(/\{|\}/g, '');
-    return data.hasOwnProperty(key) ? data[key] : '';
+    const key = m.replace(/\{|\}/g, "");
+    return data.hasOwnProperty(key) ? data[key] : "";
   });
 };
 
 export function handleGeneralError(query: TextTranslateQuery, error: ServiceError | HttpResponse) {
-  if ('response' in error) {
+  if ("response" in error) {
     // Handle HTTP response error
     const { statusCode } = error.response;
-    const reason = statusCode >= 400 && statusCode < 500 ? 'param' : 'api';
+    const reason = statusCode >= 400 && statusCode < 500 ? "param" : "api";
     query.onCompletion({
       error: {
         type: reason,
@@ -56,8 +56,8 @@ export function handleGeneralError(query: TextTranslateQuery, error: ServiceErro
     query.onCompletion({
       error: {
         ...error,
-        type: error.type || 'unknown',
-        message: error.message || 'Unknown error',
+        type: error.type || "unknown",
+        message: error.message || "Unknown error",
       },
     });
   }

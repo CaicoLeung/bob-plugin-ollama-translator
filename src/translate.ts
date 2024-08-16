@@ -1,20 +1,24 @@
-import { ServiceError, TextTranslateQuery } from '@bob-translate/types';
-import { generatePrompt, generateSystemPrompt, handleGeneralError } from './util';
-import { langMap } from './lang';
+import { ServiceError, TextTranslateQuery } from "@bob-translate/types";
+import {
+  generatePrompt,
+  generateSystemPrompt,
+  handleGeneralError,
+} from "./util";
+import { langMap } from "./lang";
 
 export async function translate(query: TextTranslateQuery) {
   try {
     if (!langMap.get(query.detectTo)) {
       handleGeneralError(query, {
-        type: 'unsupportedLanguage',
-        message: '不支持该语种',
-        addition: '不支持该语种',
+        type: "unsupportedLanguage",
+        message: "不支持该语种",
+        addition: "不支持该语种",
       });
     }
 
     const {
       apiUrl,
-      apiKey = 'ollama',
+      apiKey = "ollama",
       model,
       customModel,
     }: {
@@ -24,53 +28,54 @@ export async function translate(query: TextTranslateQuery) {
       customModel?: string;
     } = $option;
 
-    const isCustomModelRequired = model === 'custom';
+    const isCustomModelRequired = model === "custom";
     if (isCustomModelRequired && !customModel) {
       handleGeneralError(query, {
-        type: 'param',
-        message: '配置错误 - 请确保您在插件配置中填入了正确的自定义模型名称',
-        addition: '请在插件配置中填写自定义模型名称',
+        type: "param",
+        message: "配置错误 - 请确保您在插件配置中填入了正确的自定义模型名称",
+        addition: "请在插件配置中填写自定义模型名称",
       });
     }
 
     const params = {
-      model: model === 'custom' ? customModel : model,
+      model: model === "custom" ? customModel : model,
       apiKey,
       stream: true,
       messages: [
         {
-          role: 'system',
+          role: "system",
           content: generateSystemPrompt(),
         },
         {
-          role: 'user',
+          role: "user",
           content: generatePrompt(query),
         },
       ],
     };
 
-    let targetText = ''; // 初始化拼接结果变量
-    let buffer = ''; // 新增 buffer 变量
+    let targetText = ""; // 初始化拼接结果变量
+    let buffer = ""; // 新增 buffer 变量
 
     $http.streamRequest({
-      method: 'POST',
-      url: apiUrl || 'http://localhost:11434/v1/chat/completions',
+      method: "POST",
+      url: apiUrl || "http://localhost:11434/v1/chat/completions",
       timeout: 80,
       cancelSignal: query.cancelSignal,
       header: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: {
         ...params,
         stream: true,
       },
       streamHandler: (streamData) => {
-        if (streamData.text?.includes('Invalid token')) {
+        if (streamData.text?.includes("Invalid token")) {
           handleGeneralError(query, {
-            type: 'secretKey',
-            message: '配置错误 - 请确保您在插件配置中填入了正确的 API Keys',
-            addition: '请在插件配置中填写正确的 API Keys',
-            troubleshootingLink: 'https://bobtranslate.com/service/translate/openai.html',
+            type: "secretKey",
+            message: "配置错误 - 请确保您在插件配置中填入了正确的 API Keys",
+            addition: "请在插件配置中填写正确的 API Keys",
+            troubleshootingLink:
+              "https://bobtranslate.com/service/translate/openai.html",
           });
         } else if (streamData.text !== undefined) {
           // 将新的数据添加到缓冲变量中
@@ -80,7 +85,11 @@ export async function translate(query: TextTranslateQuery) {
           if (match) {
             // 如果是一个完整的消息，处理它并从缓冲变量中移除
             const textFromResponse = match[1].trim();
-            targetText = handleStreamResponse(query, targetText, textFromResponse);
+            targetText = handleStreamResponse(
+              query,
+              targetText,
+              textFromResponse,
+            );
             buffer = buffer.slice(match[0].length);
           }
         }
@@ -97,8 +106,8 @@ export async function translate(query: TextTranslateQuery) {
             },
           });
         }
-        buffer = '';
-        targetText = '';
+        buffer = "";
+        targetText = "";
       },
     });
   } catch (error) {
@@ -106,8 +115,12 @@ export async function translate(query: TextTranslateQuery) {
   }
 }
 
-const handleStreamResponse = (query: TextTranslateQuery, targetText: string, textFromResponse: string) => {
-  if (textFromResponse !== '[DONE]') {
+const handleStreamResponse = (
+  query: TextTranslateQuery,
+  targetText: string,
+  textFromResponse: string,
+) => {
+  if (textFromResponse !== "[DONE]") {
     try {
       const dataObj = JSON.parse(textFromResponse);
       // https://github.com/openai/openai-node/blob/master/src/resources/chat/completions#L190
@@ -126,14 +139,14 @@ const handleStreamResponse = (query: TextTranslateQuery, targetText: string, tex
     } catch (error) {
       if (isServiceError(error)) {
         handleGeneralError(query, {
-          type: error.type || 'param',
-          message: error.message || 'Failed to parse JSON',
+          type: error.type || "param",
+          message: error.message || "Failed to parse JSON",
           addition: error.addition,
         });
       } else {
         handleGeneralError(query, {
-          type: 'param',
-          message: 'An unknown error occurred',
+          type: "param",
+          message: "An unknown error occurred",
         });
       }
     }
@@ -143,9 +156,9 @@ const handleStreamResponse = (query: TextTranslateQuery, targetText: string, tex
 
 const isServiceError = (error: unknown): error is ServiceError => {
   return (
-    typeof error === 'object' &&
+    typeof error === "object" &&
     error !== null &&
-    'message' in error &&
-    typeof (error as ServiceError).message === 'string'
+    "message" in error &&
+    typeof (error as ServiceError).message === "string"
   );
 };
