@@ -1,7 +1,7 @@
 {
   "name": "bob-plugin-ollama-translator",
-  "version": "1.0.0",
-  "description": "支持调用本地离线（亦可自定义外部api）Ollama模型进行翻译/解释",
+  "version": "2.0.0",
+  "description": "调用本地Ollama服务离线，或通过ChatGPT或进行单词/翻译/百科解释",
   "homepage": "https://github.com/CaicoLeung/bob-plugin-ollama-translator",
   "type": "module",
   "repository": {
