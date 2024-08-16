@@ -1,7 +1,7 @@
 {
   "identifier": "bob-plugin-ollama-translator",
   "category": "translate",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "name": "Ollama模型翻译",
   "summary": "支持调用本地离线（亦可自定义外部api）Ollama模型进行翻译/解释",
   "author": "Caico",
