@@ -10,6 +10,23 @@
   "minBobVersion": "1.8.0",
   "options": [
     {
+      "identifier": "service",
+      "type": "menu",
+      "title": "服务",
+      "defaultValue": "ollama",
+      "desc": "选择服务",
+      "menuValues": [
+        {
+          "title": "OpenAI",
+          "value": "openai"
+        },
+        {
+          "title": "Ollama",
+          "value": "ollama"
+        }
+      ]
+    },
+    {
       "identifier": "pattern",
       "type": "menu",
       "title": "模式",

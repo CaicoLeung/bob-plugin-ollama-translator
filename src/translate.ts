@@ -13,11 +13,13 @@ export async function translate(query: TextTranslateQuery) {
     }
 
     const {
+      service = "ollama",
       apiUrl,
       apiKey = "ollama",
       model,
       customModel,
     }: {
+      service?: string;
       apiUrl?: string;
       apiKey?: string;
       model?: string;
@@ -35,7 +37,6 @@ export async function translate(query: TextTranslateQuery) {
 
     const params = {
       model: model === "custom" ? customModel : model,
-      apiKey,
       stream: true,
       messages: [
         {
@@ -51,19 +52,22 @@ export async function translate(query: TextTranslateQuery) {
 
     let targetText = ""; // 初始化拼接结果变量
     let buffer = ""; // 新增 buffer 变量
+    const url =
+      apiUrl ||
+      (service === "openai"
+        ? "https://api.openai.com/v1/chat/completions"
+        : "http://localhost:11434/v1/chat/completions");
 
     $http.streamRequest({
       method: "POST",
-      url: apiUrl || "http://localhost:11434/v1/chat/completions",
-      timeout: 80,
+      url,
+      timeout: 30,
       cancelSignal: query.cancelSignal,
       header: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
       },
-      body: {
-        ...params,
-        stream: true,
-      },
+      body: params,
       streamHandler: (streamData) => {
         if (streamData.text?.includes("Invalid token")) {
           handleGeneralError(query, {
