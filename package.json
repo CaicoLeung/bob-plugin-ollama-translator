@@ -26,11 +26,14 @@
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^8.1.0",
+    "eslint": "^9.9.0",
+    "globals": "^15.9.0",
     "prettier": "^3.3.3",
     "rollup": "^4.20.0",
     "rollup-plugin-copy": "^3.5.0",
     "tslib": "2.6.3",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.1.0"
   },
   "packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e"
 }
