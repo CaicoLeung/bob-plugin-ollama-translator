@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "5.1.0",
+      "desc": "v5.1.0",
+      "sha256": "16002bcf2a48b052397d4aac86c5184282e7015b3ccb6f81d79e0fc709abc02f",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/5.1.0/bob-plugin-ollama-translator-v5.1.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "5.0.0",
       "desc": "修改插件名称和logo；添加ChatGPT支持",
       "sha256": "9173f8a2dc882f1b7eae840453bb0174e41cdb9d0a6a131aeabeddbece8fb397",
