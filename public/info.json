@@ -76,24 +76,16 @@
       "identifier": "model",
       "type": "menu",
       "title": "模型",
-      "defaultValue": "llama3",
-      "desc": "选择Ollama模型, 确保你已经安装相应模型。",
+      "defaultValue": "qwen2.5:14b",
+      "desc": "如果选择Ollama模型, 确保你已经安装相应模型。",
       "menuValues": [
         {
-          "title": "deepseek-r1:32b",
-          "value": "deepseek-r1:32b"
-        },
-        {
-          "title": "deepseek-r1:14b",
-          "value": "deepseek-r1:14b"
+          "title": "qwen2.5:32b",
+          "value": "qwen2.5:32b"
         },
         {
           "title": "qwen2.5:14b",
           "value": "qwen2.5:14b"
-        },
-        {
-          "title": "qwen2.5:32b",
-          "value": "qwen2.5:32b"
         },
         {
           "title": "phi4",
@@ -102,6 +94,14 @@
         {
           "title": "自定义",
           "value": "custom"
+        },
+        {
+          "title": "gpt-4o",
+          "value": "gpt-4o"
+        },
+        {
+          "title": "gpt-4o-mini",
+          "value": "gpt-4o-mini"
         }
       ]
     },
