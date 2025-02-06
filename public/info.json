@@ -80,20 +80,24 @@
       "desc": "选择Ollama模型, 确保你已经安装相应模型。",
       "menuValues": [
         {
-          "title": "llama3.1",
-          "value": "llama3.1"
+          "title": "deepseek-r1:32b",
+          "value": "deepseek-r1:32b"
         },
         {
-          "title": "llama3",
-          "value": "llama3"
+          "title": "deepseek-r1:14b",
+          "value": "deepseek-r1:14b"
         },
         {
-          "title": "qwen2",
-          "value": "qwen2"
+          "title": "qwen2.5:14b",
+          "value": "qwen2.5:14b"
         },
         {
-          "title": "gemma2",
-          "value": "gemma2"
+          "title": "qwen2.5:32b",
+          "value": "qwen2.5:32b"
+        },
+        {
+          "title": "phi4",
+          "value": "phi4"
         },
         {
           "title": "自定义",
