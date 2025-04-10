@@ -2,6 +2,9 @@ import { ServiceError, TextTranslateQuery } from "@bob-translate/types";
 import { generatePrompt, generateSystemPrompt, handleGeneralError } from "./util";
 import { langMap } from "./lang";
 
+const records = new Map<string, string>();
+const maxRecords = 100;
+
 export async function translate(query: TextTranslateQuery) {
   try {
     if (!langMap.get(query.detectTo)) {
@@ -74,7 +77,8 @@ export async function translate(query: TextTranslateQuery) {
             type: "secretKey",
             message: "配置错误 - 请确保您在插件配置中填入了正确的 API Keys",
             addition: "请在插件配置中填写正确的 API Keys",
-            troubleshootingLink: "https://bobtranslate.com/service/translate/openai.html",
+            troubleshootingLink:
+              "https://bobtranslate.com/service/translate/openai.html",
           });
         } else if (streamData.text !== undefined) {
           // 将新的数据添加到缓冲变量中
@@ -84,7 +88,11 @@ export async function translate(query: TextTranslateQuery) {
           if (match) {
             // 如果是一个完整的消息，处理它并从缓冲变量中移除
             const textFromResponse = match[1].trim();
-            targetText = handleStreamResponse(query, targetText, textFromResponse);
+            targetText = handleStreamResponse(
+              query,
+              targetText,
+              textFromResponse,
+            );
             buffer = buffer.slice(match[0].length);
           }
         }
@@ -100,6 +108,11 @@ export async function translate(query: TextTranslateQuery) {
               toParagraphs: [targetText],
             },
           });
+          records.set(query.detectFrom, targetText);
+          if (records.size > maxRecords) {
+            // delete the oldest record
+            records.delete(records.keys().next().value as string);
+          }
         }
         buffer = "";
         targetText = "";
@@ -110,7 +123,23 @@ export async function translate(query: TextTranslateQuery) {
   }
 }
 
-const handleStreamResponse = (query: TextTranslateQuery, targetText: string, textFromResponse: string) => {
+const handleStreamResponse = (
+  query: TextTranslateQuery,
+  targetText: string,
+  textFromResponse: string,
+) => {
+  if (records.has(query.detectFrom)) {
+    const record = records.get(query.detectFrom);
+    if (record) {
+      query.onStream({
+        result: {
+          from: query.detectFrom,
+          to: query.detectTo,
+          toParagraphs: [record],
+        },
+      });
+    }
+  }
   if (textFromResponse !== "[DONE]") {
     try {
       const dataObj = JSON.parse(textFromResponse);
