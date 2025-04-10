@@ -1,5 +1,10 @@
 import { ServiceError, TextTranslateQuery } from "@bob-translate/types";
-import { generatePrompt, generateSystemPrompt, handleGeneralError } from "./util";
+import {
+  generatePrompt,
+  generateSetKey,
+  generateSystemPrompt,
+  handleGeneralError,
+} from "./util";
 import { langMap } from "./lang";
 
 const records = new Map<string, string>();
@@ -7,6 +12,19 @@ const maxRecords = 100;
 
 export async function translate(query: TextTranslateQuery) {
   try {
+    if (records.has(generateSetKey(query))) {
+      const record = records.get(generateSetKey(query));
+      if (record) {
+        query.onCompletion({
+          result: {
+            from: query.detectFrom,
+            to: query.detectTo,
+            toParagraphs: [record],
+          },
+        });
+      }
+      return;
+    }
     if (!langMap.get(query.detectTo)) {
       handleGeneralError(query, {
         type: "unsupportedLanguage",
@@ -108,7 +126,7 @@ export async function translate(query: TextTranslateQuery) {
               toParagraphs: [targetText],
             },
           });
-          records.set(query.detectFrom, targetText);
+          records.set(generateSetKey(query), targetText);
           if (records.size > maxRecords) {
             // delete the oldest record
             records.delete(records.keys().next().value as string);
@@ -128,18 +146,6 @@ const handleStreamResponse = (
   targetText: string,
   textFromResponse: string,
 ) => {
-  if (records.has(query.detectFrom)) {
-    const record = records.get(query.detectFrom);
-    if (record) {
-      query.onStream({
-        result: {
-          from: query.detectFrom,
-          to: query.detectTo,
-          toParagraphs: [record],
-        },
-      });
-    }
-  }
   if (textFromResponse !== "[DONE]") {
     try {
       const dataObj = JSON.parse(textFromResponse);

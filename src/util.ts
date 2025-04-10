@@ -94,3 +94,7 @@ export function handleGeneralError(query: TextTranslateQuery, error: ServiceErro
 export function isEnglishWord(text: string) {
   return text.split(" ").length === 1 && /^[a-zA-Z]+$/.test(text);
 }
+
+export function generateSetKey(query: TextTranslateQuery) {
+  return `${query.from}-${query.to}-${query.text.trim()}`;
+}
