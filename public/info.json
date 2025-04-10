@@ -88,8 +88,12 @@
           "value": "qwen2.5:14b"
         },
         {
-          "title": "phi4",
-          "value": "phi4"
+          "title": "gemma3:27b",
+          "value": "gemma3:27b"
+        },
+        {
+          "title": "gemma3:12b",
+          "value": "gemma3:12b"
         },
         {
           "title": "自定义",
