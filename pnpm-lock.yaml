@@ -20,6 +20,9 @@ importers:
       bun:
         specifier: ^1.1.24
         version: 1.1.24
+      zx:
+        specifier: ^8.5.2
+        version: 8.5.2
     devDependencies:
       '@typescript-eslint/parser':
         specifier: ^8.1.0
@@ -399,7 +402,6 @@ packages:
 
   bun@1.1.24:
     resolution: {integrity: sha512-vZt5zNVaoNTSlNprdVdQVZInBcGC2QSik6o9ZsMzuYiiUEAEqpRwwMXAYDUN85mt2FNnsGvmk/8xVlUXS7IzEw==}
-    cpu: [arm64, x64]
     os: [darwin, linux, win32]
     hasBin: true
 
@@ -883,6 +885,11 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zx@8.5.2:
+    resolution: {integrity: sha512-eIxjTkCtlzvDNRhw3RD1gGBPA4nxOTn6PafpKl+MW4eE2jR/u/R6mqq7oyUCXwarM5DSP96kWtq6XkrL2kSFrg==}
+    engines: {node: '>= 12.17.0'}
+    hasBin: true
 
 snapshots:
 
@@ -1677,3 +1684,5 @@ snapshots:
   wrappy@1.0.2: {}
 
   yocto-queue@0.1.0: {}
+
+  zx@8.5.2: {}
