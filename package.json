@@ -16,13 +16,16 @@
     "translate"
   ],
   "scripts": {
-    "build": "rollup --config rollup.config.ts --configPlugin typescript"
+    "build": "npx tsx scripts/build.ts",
+    "build:bun": "bun scripts/build.ts",
+    "build:node22": "NODE_OPTIONS=\"--experimental-strip-types\" zx scripts/build.ts"
   },
   "dependencies": {
     "@bob-translate/types": "^1.0.2",
-    "@rollup/plugin-typescript": "^11.1.6",
     "@rollup/plugin-terser": "0.4.4",
-    "bun": "^1.1.24"
+    "@rollup/plugin-typescript": "^11.1.6",
+    "bun": "^1.1.24",
+    "zx": "^8.5.2"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^8.1.0",
