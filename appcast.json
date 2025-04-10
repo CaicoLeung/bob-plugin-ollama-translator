@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "5.3.0",
+      "desc": "添加历史记录功能，当在最近100次翻译同一段话时，则避免再次触发翻译，返回历史记录。",
+      "sha256": "65bd501c8f633fb482ce9dbf40118756843a22fda73fccd126d28b48926984a7",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v5.3.0/bob-plugin-ollama-translator-v5.3.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "5.2.1",
       "desc": "v5.2.1",
       "sha256": "7695ac1fd64a462bc7c693a114e8f13573a883b1ccb52f10c87fd7ff13fd85b5",
