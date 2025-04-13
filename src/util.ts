@@ -1,7 +1,7 @@
 import { HTTP_ERROR_CODES } from "./constants";
 import { HttpResponse, ServiceError, TextTranslateQuery } from "@bob-translate/types";
 
-export function generatePrompt(query: TextTranslateQuery) {
+export function generatePrompt(query: TextTranslateQuery): string {
   const pattern = $option.pattern || "translate";
   const { text } = query;
 
@@ -22,14 +22,18 @@ export function generatePrompt(query: TextTranslateQuery) {
           sourceLang: query.detectFrom,
           targetLang: query.detectTo,
           sourceText: query.text,
-        }
+        },
       );
     } else {
-      return parseStringTemplate($option.prompt || `Translate the following text to {targetLang}: {sourceText}`, {
-        sourceLang: query.detectFrom,
-        targetLang: query.detectTo,
-        sourceText: query.text,
-      });
+      return parseStringTemplate(
+        $option.prompt ||
+          `Translate the following text to {targetLang}: {sourceText}`,
+        {
+          sourceLang: query.detectFrom,
+          targetLang: query.detectTo,
+          sourceText: query.text,
+        },
+      );
     }
   } else if (pattern === "interpret") {
     return parseStringTemplate(`简明扼要地解释：{sourceText}`, {
@@ -38,9 +42,10 @@ export function generatePrompt(query: TextTranslateQuery) {
       sourceText: query.text,
     });
   }
+  return "";
 }
 
-export function generateSystemPrompt(query: TextTranslateQuery) {
+export function generateSystemPrompt(query: TextTranslateQuery): string {
   const { text } = query;
   const promptMaps: Record<string, string> = {
     translate: isEnglishWord(text.trim())

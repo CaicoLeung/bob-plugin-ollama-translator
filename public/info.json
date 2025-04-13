@@ -47,10 +47,10 @@
       ]
     },
     {
-      "identifier": "apiUrl",
+      "identifier": "baseUrl",
       "type": "text",
-      "title": "API URL",
-      "desc": "选择其他服务时，请输入API URL",
+      "title": "Base URL",
+      "desc": "选择其他服务时，请输入Base URL",
       "textConfig": {
         "type": "visible",
         "placeholderText": "例如: https://api.openai.com/v1/chat/completions"
