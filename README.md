@@ -1,7 +1,7 @@
 # **[bob-plugin-ollama-translator](https://github.com/CaicoLeung/bob-plugin-ollama-translator)**
 ![image](https://github.com/user-attachments/assets/8f4fb2e9-f6c0-4fb9-9783-55ce5739fbf8)
 
-为[bob](https://bobtranslate.com/)编写的通过调用本地Ollama服务或ChatGPT服务接口实现单词/整句翻译/百科解释的插件（需要bob版本>=1.8.0）
+为[bob](https://bobtranslate.com/) 编写的翻译插件，支持多种AI服务（Ollama/OpenAI/Grok/Claude/Gemini等）的翻译和解释插件，可进行单词翻译、文本翻译及百科解释（需要bob版本>=1.8.0）
 
 ## Bob效果展示
 ### 翻译模式
@@ -18,12 +18,14 @@
 
 
 ## 支持功能
-1. 支持Ollama和OpenAI服务
+1. 支持使用api key 使用Ollama/OpenAI/Grok/Claude/Gemini/DeepSeek 等AI服务
 2. 支持切换翻译模式和解释模式
 3. 自定义Prompt
 4. 自定义模型
-5. 自定义API URL
+5. 自定义Base URL
 
 ## 配置项
-  <img width="466" alt="image" src="https://github.com/user-attachments/assets/816f2c65-ab2d-4152-bf96-82654bcbfc25">
+  <img width="455" alt="image" src="https://github.com/user-attachments/assets/46ef99d7-e827-449f-8ff2-51b621b7da0a" />
+
+
 
