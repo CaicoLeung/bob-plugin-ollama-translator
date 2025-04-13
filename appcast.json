@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "6.0.0",
+      "desc": "新功能 (Features) 集成了 eventsource-parser 以改进翻译功能中的流式响应处理 更新了服务配置，新增了服务和API配置支持，增强了translate函数以支持自定义API URL 修复 (Fixes) 修正了Claude和Gemini的ServiceBaseUrl，确保使用正确的API端点 重构 (Refactor) 在info.json中将API URL重命名为Base URL 更新了generatePrompt函数签名，现在返回string类型 工程改进 (Chores) 更新了package.json，添加了新的开发依赖 修改了tsconfig.json中的模块解析配置 在rollup.config.ts中配置了nodeResolve 添加了rollup-plugin-delete并配置，用于在构建前清理dist目录 添加了.nvmrc文件，指定Node.js版本为20.18.3",
+      "sha256": "cd9cf782de42658302c0ff1a2b6609a98ba2a8d280d3ca4446d423953eb6601f",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v6.0.0/bob-plugin-ollama-translator-v6.0.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "5.3.0",
       "desc": "添加历史记录功能，当在最近100次翻译同一段话时，则避免再次触发翻译，返回历史记录。",
       "sha256": "65bd501c8f633fb482ce9dbf40118756843a22fda73fccd126d28b48926984a7",

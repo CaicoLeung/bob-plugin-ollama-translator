@@ -1,7 +1,7 @@
 {
   "identifier": "bob-plugin-ollama-translator",
   "category": "translate",
-  "version": "5.3.0",
+  "version": "6.0.0",
   "name": "AI单词/翻译/百科解释",
   "summary": "调用本地Ollama服务离线，或通过ChatGPT或进行单词/翻译/百科解释",
   "author": "Caico",
