@@ -1,7 +1,7 @@
 {
   "name": "bob-plugin-ollama-translator",
-  "version": "2.0.0",
-  "description": "调用本地Ollama服务离线，或通过ChatGPT或进行单词/翻译/百科解释",
+  "version": "3.0.0",
+  "description": "支持多种AI服务（Ollama/OpenAI/Grok/Claude/Gemini等）的翻译和解释插件，可进行单词翻译、文本翻译及百科解释",
   "homepage": "https://github.com/CaicoLeung/bob-plugin-ollama-translator",
   "type": "module",
   "repository": {
@@ -13,7 +13,15 @@
   "main": "src/main.js",
   "keywords": [
     "bobplugin",
-    "translate"
+    "ollama",
+    "openai",
+    "grok",
+    "claude",
+    "gemini",
+    "deepseek",
+    "ai",
+    "translation",
+    "explanation"
   ],
   "scripts": {
     "build": "npx tsx scripts/build.ts",
