@@ -6,7 +6,7 @@
     "lib": ["ESNext"],
     "skipLibCheck": true,
     /* Bundler mode */
-    "moduleResolution": "Bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "moduleDetection": "force",
