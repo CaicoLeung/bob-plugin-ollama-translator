@@ -99,14 +99,16 @@ export async function translate(query: TextTranslateQuery) {
 
         const chunk = JSON.parse(event.data) as OpenAI.Chat.ChatCompletionChunk;
         const delta = chunk.choices[0].delta.content;
-        targetText += delta;
-        query.onStream({
-          result: {
-            from: query.detectFrom,
-            to: query.detectTo,
-            toParagraphs: [targetText],
-          },
-        });
+        if (delta) {
+          targetText += delta;
+          query.onStream({
+            result: {
+              from: query.detectFrom,
+              to: query.detectTo,
+              toParagraphs: [targetText],
+            },
+          });
+        }
       },
       onRetry(retryInterval) {
         $log.info("Server requested retry interval of " + retryInterval + "ms");
