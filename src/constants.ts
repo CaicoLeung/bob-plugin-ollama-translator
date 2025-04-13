@@ -161,8 +161,9 @@ export const SupportLanguages = [
 
 export const ServiceBaseUrl = {
   openai: "https://api.openai.com/v1/chat/completions",
-  claude: "https://api.anthropic.com/v1/",
-  gemini: "https://generativelanguage.googleapis.com/v1beta/openai/",
+  claude: "https://api.anthropic.com/v1/chat/completions",
+  gemini:
+    "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
   grok: "https://api.x.ai/v1/chat/completions",
   deepseek: "https://api.deepseek.com/chat/completions",
   ollama: "http://localhost:11434/v1/chat/completions",
