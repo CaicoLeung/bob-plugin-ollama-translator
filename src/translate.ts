@@ -6,6 +6,7 @@ import {
   handleGeneralError,
 } from "./util";
 import { langMap } from "./lang";
+import { ServiceBaseUrl } from "./constants";
 
 const records = new Map<string, string>();
 const maxRecords = 100;
@@ -34,9 +35,9 @@ export async function translate(query: TextTranslateQuery) {
     }
 
     const {
-      service = "ollama",
+      service,
       apiUrl,
-      apiKey = "ollama",
+      apiKey,
       model,
       customModel,
     }: {
@@ -54,8 +55,17 @@ export async function translate(query: TextTranslateQuery) {
         message: "配置错误 - 请确保您在插件配置中填入了正确的自定义模型名称",
         addition: "请在插件配置中填写自定义模型名称",
       });
+      return;
     }
 
+    if (service === "other" && !apiUrl) {
+      handleGeneralError(query, {
+        type: "param",
+        message: "配置错误 - 请确保您在插件配置中填入了Api url",
+        addition: "请在插件配置中填写Api url",
+      });
+      return;
+    }
     const params = {
       model: model === "custom" ? customModel : model,
       stream: true,
@@ -74,10 +84,7 @@ export async function translate(query: TextTranslateQuery) {
     let targetText = ""; // 初始化拼接结果变量
     let buffer = ""; // 新增 buffer 变量
     const url =
-      apiUrl ||
-      (service === "openai"
-        ? "https://api.openai.com/v1/chat/completions"
-        : "http://localhost:11434/v1/chat/completions");
+      ServiceBaseUrl[service as keyof typeof ServiceBaseUrl] || apiUrl;
 
     $http.streamRequest({
       method: "POST",

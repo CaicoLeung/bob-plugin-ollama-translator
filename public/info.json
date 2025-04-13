@@ -17,14 +17,53 @@
       "desc": "选择服务",
       "menuValues": [
         {
+          "title": "Ollama",
+          "value": "ollama"
+        },
+        {
           "title": "OpenAI",
           "value": "openai"
         },
         {
-          "title": "Ollama",
-          "value": "ollama"
+          "title": "Grok",
+          "value": "grok"
+        },
+        {
+          "title": "Claude",
+          "value": "claude"
+        },
+        {
+          "title": "DeepSeek",
+          "value": "deepseek"
+        },
+        {
+          "title": "Gemini",
+          "value": "gemini"
+        },
+        {
+          "title": "其他",
+          "value": "other"
         }
       ]
+    },
+    {
+      "identifier": "apiUrl",
+      "type": "text",
+      "title": "API URL",
+      "desc": "选择其他服务时，请输入API URL",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如: https://api.openai.com/v1/chat/completions"
+      }
+    },
+    {
+      "identifier": "apiKey",
+      "type": "text",
+      "title": "API KEY",
+      "desc": "填写相应服务的的API KEY，Ollama不需要填写",
+      "textConfig": {
+        "placeholderText": "例如: sk-proj-1234567890"
+      }
     },
     {
       "identifier": "pattern",
@@ -54,31 +93,16 @@
       }
     },
     {
-      "identifier": "apiUrl",
-      "type": "text",
-      "title": "API URL",
-      "desc": "自定义api url，不设置则使用内置api。",
-      "textConfig": {
-        "type": "visible",
-        "placeholderText": "请输入api url"
-      }
-    },
-    {
-      "identifier": "apiKey",
-      "type": "text",
-      "title": "API KEY",
-      "desc": "填写了API URL时可能需要的API KEY",
-      "textConfig": {
-        "placeholderText": "请输入api key"
-      }
-    },
-    {
       "identifier": "model",
       "type": "menu",
       "title": "模型",
       "defaultValue": "qwen2.5:14b",
-      "desc": "如果选择Ollama模型, 确保你已经安装相应模型。",
+      "desc": "如果选择Ollama模型, 确保你本地已经安装相应模型。",
       "menuValues": [
+        {
+          "title": "自定义",
+          "value": "custom"
+        },
         {
           "title": "qwen2.5:32b",
           "value": "qwen2.5:32b"
@@ -96,16 +120,20 @@
           "value": "gemma3:12b"
         },
         {
-          "title": "自定义",
-          "value": "custom"
-        },
-        {
           "title": "gpt-4o",
           "value": "gpt-4o"
         },
         {
           "title": "gpt-4o-mini",
           "value": "gpt-4o-mini"
+        },
+        {
+          "title": "grok-3-beta",
+          "value": "grok-3-beta"
+        },
+        {
+          "title": "grok-3-mini-beta",
+          "value": "grok-3-mini-beta"
         }
       ]
     },
@@ -115,7 +143,7 @@
       "title": "自定义模型",
       "textConfig": {
         "type": "visible",
-        "placeholderText": "例如: mistral"
+        "placeholderText": "例如: gpt-4o-mini"
       },
       "desc": "仅当模型为自定义时生效"
     }
