@@ -7,7 +7,12 @@ import {
 } from "./util";
 import { langMap } from "./lang";
 import { ServiceBaseUrl } from "./constants";
-
+import {
+  EventSourceParser,
+  createParser,
+  EventSourceMessage,
+} from "eventsource-parser";
+import { OpenAI } from "openai";
 const records = new Map<string, string>();
 const maxRecords = 100;
 
@@ -82,9 +87,40 @@ export async function translate(query: TextTranslateQuery) {
     };
 
     let targetText = ""; // 初始化拼接结果变量
-    let buffer = ""; // 新增 buffer 变量
     const url =
       ServiceBaseUrl[service as keyof typeof ServiceBaseUrl] || apiUrl;
+
+    const parser: EventSourceParser = createParser({
+      onEvent: (event: EventSourceMessage) => {
+        $log.info("Received event!");
+        $log.info("id: " + event.id || "<none>");
+        $log.info("event: " + event.event || "<none>");
+        $log.info("data: " + event.data);
+
+        const chunk = JSON.parse(event.data) as OpenAI.Chat.ChatCompletionChunk;
+        const delta = chunk.choices[0].delta.content;
+        targetText += delta;
+        query.onStream({
+          result: {
+            from: query.detectFrom,
+            to: query.detectTo,
+            toParagraphs: [targetText],
+          },
+        });
+      },
+      onRetry(retryInterval) {
+        $log.info("Server requested retry interval of " + retryInterval + "ms");
+      },
+      onError: (error) => {
+        query.onCompletion({
+          result: {
+            from: query.detectFrom,
+            to: query.detectTo,
+            toParagraphs: [error.message],
+          },
+        });
+      },
+    });
 
     $http.streamRequest({
       method: "POST",
@@ -106,26 +142,14 @@ export async function translate(query: TextTranslateQuery) {
               "https://bobtranslate.com/service/translate/openai.html",
           });
         } else if (streamData.text !== undefined) {
-          // 将新的数据添加到缓冲变量中
-          buffer += streamData.text;
-          // 检查缓冲变量是否包含一个完整的消息
-          const match = buffer.match(/data: (.*?})\n/);
-          if (match) {
-            // 如果是一个完整的消息，处理它并从缓冲变量中移除
-            const textFromResponse = match[1].trim();
-            targetText = handleStreamResponse(
-              query,
-              targetText,
-              textFromResponse,
-            );
-            buffer = buffer.slice(match[0].length);
-          }
+          parser.feed(streamData.text);
         }
       },
       handler: (result) => {
         if (result.response.statusCode >= 400) {
           handleGeneralError(query, result);
         } else {
+          parser.reset();
           query.onCompletion({
             result: {
               from: query.detectFrom,
@@ -139,7 +163,6 @@ export async function translate(query: TextTranslateQuery) {
             records.delete(records.keys().next().value as string);
           }
         }
-        buffer = "";
         targetText = "";
       },
     });
@@ -147,51 +170,3 @@ export async function translate(query: TextTranslateQuery) {
     handleGeneralError(query, error as ServiceError);
   }
 }
-
-const handleStreamResponse = (
-  query: TextTranslateQuery,
-  targetText: string,
-  textFromResponse: string,
-) => {
-  if (textFromResponse !== "[DONE]") {
-    try {
-      const dataObj = JSON.parse(textFromResponse);
-      // https://github.com/openai/openai-node/blob/master/src/resources/chat/completions#L190
-      const { choices } = dataObj;
-      const delta = choices[0]?.delta?.content;
-      if (delta) {
-        targetText += delta;
-        query.onStream({
-          result: {
-            from: query.detectFrom,
-            to: query.detectTo,
-            toParagraphs: [targetText],
-          },
-        });
-      }
-    } catch (error) {
-      if (isServiceError(error)) {
-        handleGeneralError(query, {
-          type: error.type || "param",
-          message: error.message || "Failed to parse JSON",
-          addition: error.addition,
-        });
-      } else {
-        handleGeneralError(query, {
-          type: "param",
-          message: "An unknown error occurred",
-        });
-      }
-    }
-  }
-  return targetText;
-};
-
-const isServiceError = (error: unknown): error is ServiceError => {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "message" in error &&
-    typeof (error as ServiceError).message === "string"
-  );
-};
