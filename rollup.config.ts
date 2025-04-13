@@ -1,7 +1,7 @@
 import { defineConfig } from "rollup";
 import copy from "rollup-plugin-copy";
 import typescript from "@rollup/plugin-typescript";
-
+import del from "rollup-plugin-delete";
 export default defineConfig({
   input: "src/main.ts",
   output: {
@@ -10,6 +10,9 @@ export default defineConfig({
   },
   cache: true,
   plugins: [
+    del({
+      targets: ["dist"],
+    }),
     copy({
       targets: [
         { src: "public/icon.png", dest: "dist" },
