@@ -1,7 +1,6 @@
 import { ServiceError, TextTranslateQuery } from "@bob-translate/types";
 import {
   generatePrompt,
-  generateSetKey,
   generateSystemPrompt,
   handleGeneralError,
 } from "./util";
@@ -13,19 +12,19 @@ import {
   EventSourceMessage,
 } from "eventsource-parser";
 import { OpenAI } from "openai";
-const records = new Map<string, string>();
-const maxRecords = 100;
+import { useRecords } from "./uses/useRecords";
 
 export async function translate(query: TextTranslateQuery) {
+  const { addRecord, getRecord, hasRecord } = useRecords(query);
+
   try {
-    if (records.has(generateSetKey(query))) {
-      const record = records.get(generateSetKey(query));
-      if (record) {
+    if (hasRecord()) {
+      if (getRecord()) {
         query.onCompletion({
           result: {
             from: query.detectFrom,
             to: query.detectTo,
-            toParagraphs: [record],
+            toParagraphs: [getRecord()],
           },
         });
       }
@@ -159,11 +158,7 @@ export async function translate(query: TextTranslateQuery) {
               toParagraphs: [targetText],
             },
           });
-          records.set(generateSetKey(query), targetText);
-          if (records.size > maxRecords) {
-            // delete the oldest record
-            records.delete(records.keys().next().value as string);
-          }
+          addRecord(targetText);
         }
         targetText = "";
       },
