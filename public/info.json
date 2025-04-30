@@ -7,7 +7,7 @@
   "author": "Caico",
   "homepage": "https://github.com/CaicoLeung/bob-plugin-ollama-translator",
   "appcast": "https://raw.githubusercontent.com/CaicoLeung/bob-plugin-ollama-translator/main/appcast.json",
-  "minBobVersion": "1.8.0",
+  "minBobVersion": "1.15.0",
   "options": [
     {
       "identifier": "service",
@@ -104,8 +104,8 @@
           "value": "custom"
         },
         {
-          "title": "qwen2.5:32b",
-          "value": "qwen2.5:32b"
+          "title": "qwen3:14b",
+          "value": "qwen3:14b"
         },
         {
           "title": "qwen2.5:14b",
