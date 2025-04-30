@@ -26,6 +26,9 @@ export async function translate(query: TextTranslateQuery) {
           addRecord(currentDelta);
           query.onCompletion({
             result: {
+              thinkInfo: {
+                splitThinkTag: true,
+              },
               from: query.detectFrom,
               to: query.detectTo,
               toParagraphs: [currentDelta],
@@ -37,6 +40,9 @@ export async function translate(query: TextTranslateQuery) {
           currentDelta += "\n[翻译被截断：达到最大长度限制]";
           query.onCompletion({
             result: {
+              thinkInfo: {
+                splitThinkTag: true,
+              },
               from: query.detectFrom,
               to: query.detectTo,
               toParagraphs: [currentDelta],
@@ -48,6 +54,9 @@ export async function translate(query: TextTranslateQuery) {
           currentDelta += "\n[翻译被过滤：可能包含不适当内容]";
           query.onCompletion({
             result: {
+              thinkInfo: {
+                splitThinkTag: true,
+              },
               from: query.detectFrom,
               to: query.detectTo,
               toParagraphs: [currentDelta],
@@ -60,6 +69,9 @@ export async function translate(query: TextTranslateQuery) {
           currentDelta += "\n[不支持的响应类型]";
           query.onCompletion({
             result: {
+              thinkInfo: {
+                splitThinkTag: true,
+              },
               from: query.detectFrom,
               to: query.detectTo,
               toParagraphs: [currentDelta],
@@ -70,6 +82,9 @@ export async function translate(query: TextTranslateQuery) {
           // 继续累积翻译内容
           query.onStream({
             result: {
+              thinkInfo: {
+                splitThinkTag: true,
+              },
               from: query.detectFrom,
               to: query.detectTo,
               toParagraphs: [currentDelta],
@@ -93,6 +108,9 @@ export async function translate(query: TextTranslateQuery) {
       if (record) {
         query.onCompletion({
           result: {
+            thinkInfo: {
+              splitThinkTag: true,
+            },
             from: query.detectFrom,
             to: query.detectTo,
             toParagraphs: [record],
