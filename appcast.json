@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "7.0.0",
+      "desc": "支持Thinking 思考模式",
+      "sha256": "99febb1702b9e6b10ab9ff609e31bd1de0e91637214a74f344639b4b0bc4444c",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v7.0.0/bob-plugin-ollama-translator-v7.0.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "6.2.0",
       "desc": "优化架构",
       "sha256": "1ebc4677d833abffc703bf7b0c2b54a0394cdfc8efd86e2684136a5e15a9d266",
