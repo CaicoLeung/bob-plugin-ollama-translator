@@ -23,6 +23,11 @@
 3. 自定义Prompt
 4. 自定义模型
 5. 自定义Base URL
+6. 支持thinking mode
+
+   <img width="417" alt="image" src="https://github.com/user-attachments/assets/de1f999b-8919-4945-a7af-760f9a26dd07" />
+
+
 
 ## 配置项
   <img width="455" alt="image" src="https://github.com/user-attachments/assets/46ef99d7-e827-449f-8ff2-51b621b7da0a" />
