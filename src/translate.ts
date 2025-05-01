@@ -1,18 +1,51 @@
-import { ServiceError, TextTranslateQuery } from "@bob-translate/types";
-import { handleGeneralError } from "./util";
+import { ServiceError, TextTranslateQuery, ToDictObject } from "@bob-translate/types";
+import { handleGeneralError, isEnglishWord } from "./util";
 import { ServiceBaseUrl } from "./constants";
 import { useRecords } from "./uses/useRecords";
 import { preCheck } from "./precheck";
 import { useParams } from "./uses/useParams";
 import { useParse } from "./uses/useParse";
+import OpenAI from "openai";
 
 export async function translate(query: TextTranslateQuery) {
-  const { service, apiUrl, apiKey } = $option;
+  const { service, apiUrl, apiKey, pattern } = $option;
   const url = ServiceBaseUrl[service as keyof typeof ServiceBaseUrl] || apiUrl;
 
   const { addRecord, getRecord, hasRecord } = useRecords(query);
   const { params } = useParams(query);
   let currentDelta = "";
+  const isWordMode = pattern === 'translate' && isEnglishWord(query.text.trim());
+
+  if (isWordMode) {
+    $http.request({
+      method: "POST",
+      url: url!,
+      timeout: 30,
+      cancelSignal: query.cancelSignal,
+      header: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: params,
+      handler: ({ data, error }) => {
+        if (error) {
+          handleGeneralError(query, error as unknown as ServiceError);
+        }
+        const content = (data as unknown as OpenAI.Chat.Completions.ChatCompletion).choices[0].message.content || "";
+        query.onCompletion({
+          result: {
+            thinkInfo: {
+              splitThinkTag: true,
+            },
+            from: query.detectFrom,
+            to: query.detectTo,
+            toDict: JSON.parse(content) as ToDictObject,
+          },
+        });
+      },
+    });
+    return;
+  }
 
   const { parser } = useParse({
     onStream: (chunk) => {
@@ -24,6 +57,18 @@ export async function translate(query: TextTranslateQuery) {
         case "stop":
           // 正常结束，返回完整的翻译结果
           addRecord(currentDelta);
+          if (isWordMode) {
+            query.onCompletion({
+              result: {
+                thinkInfo: {
+                  splitThinkTag: true,
+                },
+                from: query.detectFrom,
+                to: query.detectTo,
+                toDict: JSON.parse(currentDelta) as ToDictObject,
+              },
+            });
+          }
           query.onCompletion({
             result: {
               thinkInfo: {
