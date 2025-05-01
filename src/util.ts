@@ -1,5 +1,5 @@
-import { HTTP_ERROR_CODES } from "./constants";
 import { HttpResponse, ServiceError, TextTranslateQuery } from "@bob-translate/types";
+import { HTTP_ERROR_CODES } from "./constants";
 
 export function generatePrompt(query: TextTranslateQuery): string {
   const pattern = $option.pattern || "translate";
@@ -8,16 +8,7 @@ export function generatePrompt(query: TextTranslateQuery): string {
   if (pattern === "translate") {
     if (isEnglishWord(text.trim())) {
       return parseStringTemplate(
-        `
-        请提供关于 {sourceText} 的详细解释，包括以下方面：
-        1. 词源: 解释该词的起源、词根，以及它是如何演变而来的。
-        2. 发音: 描述该词的发音，包括任何语音上的细微差别。
-        3. 定义: 提供该词的主要含义以及任何次要含义。
-        4. 用法: 给出使用该词的句子示例，并展示在不同语境下的用法。
-        5. 同义词和反义词: 列出同义词和反义词，并解释它们在意义或用法上的区别。
-        6. 相关词汇: 提及任何相关词汇或衍生词，并解释它们与原词的关联。
-        7. 文化或历史背景: 提供任何相关的文化或历史信息，以帮助理解该词的使用或意义。
-        `,
+        `Please translate the word {sourceText} in the {sourceLang} according to the format, with the target language being {targetLang}.`,
         {
           sourceLang: query.detectFrom,
           targetLang: query.detectTo,

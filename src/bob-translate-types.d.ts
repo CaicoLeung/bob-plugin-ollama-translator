@@ -9,21 +9,21 @@ declare module "@bob-translate/types" {
   }
 
   // TTS 结果对象
-  export interface TTSResult {
+  export interface TtsResult {
     type: string;
     value?: string;
     data?: ArrayBuffer;
   }
 
   // 音标对象
-  export interface Phonetic {
-    type: string; // 如 'us', 'uk' 等
+  export interface PhoneticObject {
+    type: 'us' | 'uk';
     value?: string;
-    tts?: TTSResult;
+    tts?: TtsResult;
   }
 
   // 词性和词义对象
-  export interface Part {
+  export interface PartObject {
     part: string; // 如 'n.', 'adj.' 等
     means: string[];
   }
@@ -41,7 +41,7 @@ declare module "@bob-translate/types" {
   }
 
   // 相关单词分组对象
-  export interface RelatedWordPart {
+  export interface RelatedWordPartObject {
     part?: string;
     words: RelatedWord[];
   }
@@ -53,12 +53,12 @@ declare module "@bob-translate/types" {
   }
 
   // 词典结果对象
-  export interface ToDict {
+  export interface ToDictObject {
     word: string;
-    phonetics?: Phonetic[];
-    parts?: Part[];
+    phonetics: PhoneticObject[];
+    parts: PartObject[];
     exchanges?: Exchange[];
-    relatedWords?: RelatedWordPart[];
+    relatedWords?: RelatedWordPartObject[];
     additions?: Addition[];
   }
 
@@ -67,10 +67,10 @@ declare module "@bob-translate/types" {
     from: string;
     to: string;
     fromParagraphs?: string[];
-    toParagraphs: string[];
-    toDict?: ToDict;
-    fromTTS?: TTSResult;
-    toTTS?: TTSResult;
+    toParagraphs?: string[];
+    toDict: ToDictObject;
+    fromTTS?: TtsResult;
+    toTTS?: TtsResult;
     thinkInfo?: ThinkInfo; // Bob 1.15.0+ 新增
     raw?: Record<string, unknown>;
   }
