@@ -6,4 +6,5 @@ declare const $option: {
   customModel?: string;
   pattern?: string;
   prompt?: string;
+  wordPrompt?: string;
 };

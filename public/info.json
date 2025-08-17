@@ -87,7 +87,18 @@
       "identifier": "prompt",
       "type": "text",
       "title": "prompt",
-      "desc": "自定义prompt模式，在这里输入你的prompt。源语言为{sourceLang}，目标语言为{targetLang}，原文为{sourceText}。",
+      "desc": "自定义prompt模式，为空时使用默认prompt。源语言为{sourceLang}，目标语言为{targetLang}，原文为{sourceText}。",
+      "textConfig": {
+        "type": "visible",
+        "height": 100,
+        "placeholderText": "请输入prompt"
+      }
+    },
+    {
+      "identifier": "wordPrompt",
+      "type": "text",
+      "title": "单词模式 prompt",
+      "desc": "自定义单词解释模式，为空时使用默认prompt。源语言为{sourceLang}，目标语言为{targetLang}，原文为{sourceText}。",
       "textConfig": {
         "type": "visible",
         "height": 100,

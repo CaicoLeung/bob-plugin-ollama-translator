@@ -7,7 +7,8 @@ export function generatePrompt(query: TextTranslateQuery): string {
 
   if (pattern === "translate") {
     if (isEnglishWord(text.trim())) {
-      return parseStringTemplate(
+      const wordPrompt = $option.wordPrompt || "";
+      return parseStringTemplate(wordPrompt ||
         `
         请提供关于 {sourceText} 的详细解释，包括以下方面：
         1. 词源: 解释该词的起源、词根，以及它是如何演变而来的。
