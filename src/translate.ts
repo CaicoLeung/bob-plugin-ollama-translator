@@ -11,14 +11,18 @@ export async function translate(query: TextTranslateQuery) {
   const url = ServiceBaseUrl[service as keyof typeof ServiceBaseUrl] || baseUrl;
 
   const { addRecord, getRecord, hasRecord } = useRecords(query);
-  const { params } = useParams(query);
+  const { params, isIncremental } = useParams(query);
   let currentDelta = "";
 
   const { parser } = useParse({
     onStream: (chunk) => {
       const finish_reason = chunk.choices[0].finish_reason;
       const content = chunk.choices[0].delta?.content || "";
-      currentDelta += content;
+      if (isIncremental) {
+        currentDelta += content;
+      } else {
+        currentDelta = content;
+      }
 
       switch (finish_reason) {
         case "stop":

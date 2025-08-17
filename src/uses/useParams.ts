@@ -1,11 +1,18 @@
 import { TextTranslateQuery } from "@bob-translate/types";
 import { generatePrompt, generateSystemPrompt } from "../util";
+import { useQwenMTParams } from "./useQwenMTParams";
 
 export function useParams(query: TextTranslateQuery) {
   const { model, customModel } = $option;
+  const finalModel = model === "custom" ? customModel : model;
+  const isQwenMT = finalModel?.includes("qwen-mt") ?? false;
+
+  if (isQwenMT) {
+    return useQwenMTParams(query);
+  }
 
   const params = {
-    model: model === "custom" ? customModel : model,
+    model: finalModel,
     stream: true,
     messages: [
       {
@@ -21,5 +28,6 @@ export function useParams(query: TextTranslateQuery) {
 
   return {
     params,
+    isIncremental: true,
   };
 }
