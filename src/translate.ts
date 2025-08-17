@@ -7,8 +7,8 @@ import { useParams } from "./uses/useParams";
 import { useParse } from "./uses/useParse";
 
 export async function translate(query: TextTranslateQuery) {
-  const { service, apiUrl, apiKey } = $option;
-  const url = ServiceBaseUrl[service as keyof typeof ServiceBaseUrl] || apiUrl;
+  const { service, baseUrl, apiKey } = $option;
+  const url = ServiceBaseUrl[service as keyof typeof ServiceBaseUrl] || baseUrl;
 
   const { addRecord, getRecord, hasRecord } = useRecords(query);
   const { params } = useParams(query);

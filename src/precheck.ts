@@ -3,7 +3,7 @@ import { handleGeneralError } from "./util";
 import { langMap } from "./lang";
 
 export const preCheck = (query: TextTranslateQuery) => {
-  const { service, apiUrl, model, customModel } = $option;
+  const { service, baseUrl, model, customModel } = $option;
 
   const isCustomModelRequired = model === "custom";
   if (isCustomModelRequired && !customModel) {
@@ -14,11 +14,11 @@ export const preCheck = (query: TextTranslateQuery) => {
     });
   }
 
-  if (service === "other" && !apiUrl) {
+  if (service === "other" && !baseUrl) {
     handleGeneralError(query, {
       type: "param",
-      message: "配置错误 - 请确保您在插件配置中填入了Api url",
-      addition: "请在插件配置中填写Api url",
+      message: "配置错误 - 请确保您在插件配置中填入了Base Url",
+      addition: "请在插件配置中填写Base Url",
     });
   }
 
