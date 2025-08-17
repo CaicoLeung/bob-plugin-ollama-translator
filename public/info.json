@@ -53,6 +53,7 @@
       "desc": "选择其他服务时，请输入Base URL",
       "textConfig": {
         "type": "visible",
+        "height": 40,
         "placeholderText": "例如: https://api.openai.com/v1/chat/completions"
       }
     },
@@ -89,6 +90,7 @@
       "desc": "自定义prompt模式，在这里输入你的prompt。源语言为{sourceLang}，目标语言为{targetLang}，原文为{sourceText}。",
       "textConfig": {
         "type": "visible",
+        "height": 100,
         "placeholderText": "请输入prompt"
       }
     },
