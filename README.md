@@ -34,3 +34,12 @@
 
 
 
+## 使用Qwen MT 翻译模型
+Qwen-MT 是阿里云推出的专业机器翻译模型，基于强大的 Qwen3 模型架构，专门针对多语言翻译任务进行了优化训练。
+
+**官方介绍**: [Qwen-MT：速度与智能翻译的完美融合](https://qwenlm.github.io/zh/blog/qwen-mt/)
+
+### 使用注意事项
+
+#### ⚠️ Prompt 限制
+**重要**: 当使用 Qwen MT 翻译模型时，自定义 Prompt 将失效。这是因为 Qwen MT 使用专门的翻译参数来控制翻译行为，而不是通过传统的 Prompt 方式。
