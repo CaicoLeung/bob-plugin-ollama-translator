@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "8.0.0",
+      "desc": "新增 QwenMT 模型支持 - 集成新的翻译模型，提升翻译质量 新增 wordPrompt 配置 - 可配置的单词级翻译提示模板 新增文本输入框高度配置 - 通过可自定义的输入框高度改善UI布局",
+      "sha256": "23ee4cc594c7f89ceab687246e45452c2f63ca820b8c239775e798360fe2794b",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v8.0.0/bob-plugin-ollama-translator-v8.0.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "7.0.0",
       "desc": "支持Thinking 思考模式",
       "sha256": "99febb1702b9e6b10ab9ff609e31bd1de0e91637214a74f344639b4b0bc4444c",
