@@ -5,8 +5,7 @@ import { useQwenMTParams } from "./useQwenMTParams";
 export function useParams(query: TextTranslateQuery) {
   const { model, customModel } = $option;
   const finalModel = model === "custom" ? customModel : model;
-  const isQwenMT = finalModel?.includes("qwen-mt") ?? false;
-
+  const isQwenMT = /qwen-mt/.test(finalModel || "");
   if (isQwenMT) {
     return useQwenMTParams(query);
   }

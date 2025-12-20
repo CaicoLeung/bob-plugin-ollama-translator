@@ -138,7 +138,7 @@ export async function translate(query: TextTranslateQuery) {
       },
       body: params,
       streamHandler: (streamData) => {
-        if (streamData.text?.includes("Invalid token")) {
+        if (/Invalid token/ig.test(streamData.text || "")) {
           handleGeneralError(query, {
             type: "secretKey",
             message: "配置错误 - 请确保您在插件配置中填入了正确的 API Keys",
