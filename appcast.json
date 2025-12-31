@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "8.1.0",
+      "desc": "将单个apiKey 拆分为多个服务, 各自配置. 解决每次切换服务都要修改apiKey 的痛点",
+      "sha256": "3516148a8b3966de45a458e42e74af6b21ff39baa6a9f3198222779fa4ba0ae6",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v8.1.0/bob-plugin-ollama-translator-v8.1.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "8.0.0",
       "desc": "新增 QwenMT 模型支持 - 集成新的翻译模型，提升翻译质量 新增 wordPrompt 配置 - 可配置的单词级翻译提示模板 新增文本输入框高度配置 - 通过可自定义的输入框高度改善UI布局",
       "sha256": "23ee4cc594c7f89ceab687246e45452c2f63ca820b8c239775e798360fe2794b",

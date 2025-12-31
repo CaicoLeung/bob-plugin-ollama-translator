@@ -1,7 +1,7 @@
 {
   "identifier": "bob-plugin-ollama-translator",
   "category": "translate",
-  "version": "8.0.0",
+  "version": "8.1.0",
   "name": "AI单词/翻译/百科解释",
   "summary": "支持多种AI服务（Ollama/OpenAI/Grok/Claude/Gemini等）的翻译和解释插件，可进行单词翻译、文本翻译及百科解释",
   "author": "Caico",
