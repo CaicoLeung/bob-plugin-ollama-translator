@@ -6,9 +6,34 @@ import { preCheck } from "./precheck";
 import { useParams } from "./uses/useParams";
 import { useParse } from "./uses/useParse";
 
+// 根据服务类型获取对应的 API Key
+function getApiKeyByService(service: string): string {
+  const {
+    openaiApiKey,
+    grokApiKey,
+    claudeApiKey,
+    deepseekApiKey,
+    geminiApiKey,
+    otherApiKey,
+  } = $option;
+
+  const apiKeyMap: Record<string, string> = {
+    openai: openaiApiKey || "",
+    grok: grokApiKey || "",
+    claude: claudeApiKey || "",
+    deepseek: deepseekApiKey || "",
+    gemini: geminiApiKey || "",
+    other: otherApiKey || "",
+    ollama: "", // Ollama 不需要 API Key
+  };
+
+  return apiKeyMap[service] || "";
+}
+
 export async function translate(query: TextTranslateQuery) {
-  const { service, baseUrl, apiKey } = $option;
+  const { service = "ollama", baseUrl } = $option;
   const url = ServiceBaseUrl[service as keyof typeof ServiceBaseUrl] || baseUrl;
+  const apiKey = getApiKeyByService(service);
 
   // 检查 URL 是否有效
   if (!url) {

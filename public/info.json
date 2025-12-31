@@ -58,12 +58,57 @@
       }
     },
     {
-      "identifier": "apiKey",
+      "identifier": "openaiApiKey",
       "type": "text",
-      "title": "API KEY",
-      "desc": "填写相应服务的的API KEY，Ollama不需要填写",
+      "title": "OpenAI API KEY",
+      "desc": "OpenAI 服务的 API KEY",
       "textConfig": {
         "placeholderText": "例如: sk-proj-1234567890"
+      }
+    },
+    {
+      "identifier": "grokApiKey",
+      "type": "text",
+      "title": "Grok API KEY",
+      "desc": "Grok 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: xai-1234567890"
+      }
+    },
+    {
+      "identifier": "claudeApiKey",
+      "type": "text",
+      "title": "Claude API KEY",
+      "desc": "Claude 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: sk-ant-1234567890"
+      }
+    },
+    {
+      "identifier": "deepseekApiKey",
+      "type": "text",
+      "title": "DeepSeek API KEY",
+      "desc": "DeepSeek 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: sk-1234567890"
+      }
+    },
+    {
+      "identifier": "geminiApiKey",
+      "type": "text",
+      "title": "Gemini API KEY",
+      "desc": "Gemini 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: AIzaSy..."
+      }
+    },
+    {
+      "identifier": "otherApiKey",
+      "type": "text",
+      "title": "其他服务 API KEY",
+      "desc": "选择「其他」服务时使用的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: sk-1234567890"
       }
     },
     {
