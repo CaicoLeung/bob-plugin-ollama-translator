@@ -1,18 +1,13 @@
 import { TextTranslateQuery } from "@bob-translate/types";
 import { generatePrompt, generateSystemPrompt } from "../util";
-import { useQwenMTParams } from "./useQwenMTParams";
 
 export function useParams(query: TextTranslateQuery) {
   const { model, customModel } = $option;
   const finalModel = model === "custom" ? customModel : model;
-  const isQwenMT = /qwen-mt/.test(finalModel || "");
-  if (isQwenMT) {
-    return useQwenMTParams(query);
-  }
 
   const params = {
-    model: finalModel,
     stream: true,
+    model: finalModel,
     messages: [
       {
         role: "system",
@@ -23,7 +18,22 @@ export function useParams(query: TextTranslateQuery) {
         content: generatePrompt(query),
       },
     ],
+    translation_options: {
+      source_lang: "auto",
+      target_lang: query.detectTo,
+    },
   };
+
+  const isQwenMT = /qwen-mt/.test(finalModel || "");
+
+  if (isQwenMT) {
+    params.messages = [
+      {
+        role: "user",
+        content: query.text,
+      },
+    ];
+  }
 
   return {
     params,
