@@ -10,12 +10,28 @@ export async function translate(query: TextTranslateQuery) {
   const { service, baseUrl, apiKey } = $option;
   const url = ServiceBaseUrl[service as keyof typeof ServiceBaseUrl] || baseUrl;
 
+  // 检查 URL 是否有效
+  if (!url) {
+    handleGeneralError(query, {
+      type: "param",
+      message: "配置错误 - 请确保您在插件配置中填入了正确的 Base URL",
+      addition: "请在插件配置中填写 Base URL",
+    });
+    return;
+  }
+
   const { addRecord, getRecord, hasRecord } = useRecords(query);
   const { params, isIncremental } = useParams(query);
   let currentDelta = "";
+  let isCompleted = false; // 防止重复调用 onCompletion
 
   const { parser } = useParse({
     onStream: (chunk) => {
+      // 检查 chunk.choices 是否存在且不为空
+      if (!chunk.choices || chunk.choices.length === 0) {
+        return;
+      }
+
       const finish_reason = chunk.choices[0].finish_reason;
       const content = chunk.choices[0].delta?.content || "";
       if (isIncremental) {
@@ -27,60 +43,72 @@ export async function translate(query: TextTranslateQuery) {
       switch (finish_reason) {
         case "stop":
           // 正常结束，返回完整的翻译结果
-          addRecord(currentDelta);
-          query.onCompletion({
-            result: {
-              thinkInfo: {
-                splitThinkTag: true,
+          if (!isCompleted) {
+            isCompleted = true;
+            addRecord(currentDelta);
+            query.onCompletion({
+              result: {
+                thinkInfo: {
+                  splitThinkTag: true,
+                },
+                from: query.detectFrom,
+                to: query.detectTo,
+                toParagraphs: [currentDelta],
               },
-              from: query.detectFrom,
-              to: query.detectTo,
-              toParagraphs: [currentDelta],
-            },
-          });
+            });
+          }
           break;
         case "length":
           // 达到最大长度限制
-          currentDelta += "\n[翻译被截断：达到最大长度限制]";
-          query.onCompletion({
-            result: {
-              thinkInfo: {
-                splitThinkTag: true,
+          if (!isCompleted) {
+            isCompleted = true;
+            currentDelta += "\n[翻译被截断：达到最大长度限制]";
+            query.onCompletion({
+              result: {
+                thinkInfo: {
+                  splitThinkTag: true,
+                },
+                from: query.detectFrom,
+                to: query.detectTo,
+                toParagraphs: [currentDelta],
               },
-              from: query.detectFrom,
-              to: query.detectTo,
-              toParagraphs: [currentDelta],
-            },
-          });
+            });
+          }
           break;
         case "content_filter":
           // 内容被过滤
-          currentDelta += "\n[翻译被过滤：可能包含不适当内容]";
-          query.onCompletion({
-            result: {
-              thinkInfo: {
-                splitThinkTag: true,
+          if (!isCompleted) {
+            isCompleted = true;
+            currentDelta += "\n[翻译被过滤：可能包含不适当内容]";
+            query.onCompletion({
+              result: {
+                thinkInfo: {
+                  splitThinkTag: true,
+                },
+                from: query.detectFrom,
+                to: query.detectTo,
+                toParagraphs: [currentDelta],
               },
-              from: query.detectFrom,
-              to: query.detectTo,
-              toParagraphs: [currentDelta],
-            },
-          });
+            });
+          }
           break;
         case "tool_calls":
         case "function_call":
           // API调用相关，一般不会在翻译中出现
-          currentDelta += "\n[不支持的响应类型]";
-          query.onCompletion({
-            result: {
-              thinkInfo: {
-                splitThinkTag: true,
+          if (!isCompleted) {
+            isCompleted = true;
+            currentDelta += "\n[不支持的响应类型]";
+            query.onCompletion({
+              result: {
+                thinkInfo: {
+                  splitThinkTag: true,
+                },
+                from: query.detectFrom,
+                to: query.detectTo,
+                toParagraphs: [currentDelta],
               },
-              from: query.detectFrom,
-              to: query.detectTo,
-              toParagraphs: [currentDelta],
-            },
-          });
+            });
+          }
           break;
         default:
           // 继续累积翻译内容
@@ -125,11 +153,13 @@ export async function translate(query: TextTranslateQuery) {
     }
 
     // 预检查
-    preCheck(query);
+    if (!preCheck(query)) {
+      return;
+    }
 
     $http.streamRequest({
       method: "POST",
-      url: url!,
+      url: url,
       timeout: 30,
       cancelSignal: query.cancelSignal,
       header: {

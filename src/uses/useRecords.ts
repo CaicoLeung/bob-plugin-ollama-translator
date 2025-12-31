@@ -17,9 +17,11 @@ export function useRecords(query: TextTranslateQuery) {
   };
 
   const deleteLastRecord = () => {
-    const lastKey = records.keys().next().value;
-    if (lastKey) {
-      records.delete(lastKey);
+    // 删除第一个（最旧的）记录，实现 LRU 缓存
+    // Map 保持插入顺序，所以第一个就是最旧的
+    const firstKey = records.keys().next().value;
+    if (firstKey) {
+      records.delete(firstKey);
     }
   };
 

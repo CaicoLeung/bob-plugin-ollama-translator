@@ -9,8 +9,12 @@ export interface UseParseOptions {
 export function useParse({ onStream, onError }: UseParseOptions) {
   const parser = createParser({
     onEvent: (event: EventSourceMessage) => {
-      const chunk = JSON.parse(event.data) as OpenAI.Chat.ChatCompletionChunk;
-      onStream(chunk);
+      try {
+        const chunk = JSON.parse(event.data) as OpenAI.Chat.ChatCompletionChunk;
+        onStream(chunk);
+      } catch (error) {
+        onError(error instanceof Error ? error : new Error("Failed to parse event data"));
+      }
     },
     onError: onError,
   });

@@ -2,7 +2,7 @@ import { TextTranslateQuery } from "@bob-translate/types";
 import { handleGeneralError } from "./util";
 import { langMap } from "./lang";
 
-export const preCheck = (query: TextTranslateQuery) => {
+export const preCheck = (query: TextTranslateQuery): boolean => {
   const { service, baseUrl, model, customModel } = $option;
 
   const isCustomModelRequired = model === "custom";
@@ -12,6 +12,7 @@ export const preCheck = (query: TextTranslateQuery) => {
       message: "配置错误 - 请确保您在插件配置中填入了正确的自定义模型名称",
       addition: "请在插件配置中填写自定义模型名称",
     });
+    return false;
   }
 
   if (service === "other" && !baseUrl) {
@@ -20,6 +21,7 @@ export const preCheck = (query: TextTranslateQuery) => {
       message: "配置错误 - 请确保您在插件配置中填入了Base Url",
       addition: "请在插件配置中填写Base Url",
     });
+    return false;
   }
 
   if (!langMap.get(query.detectTo)) {
@@ -28,5 +30,8 @@ export const preCheck = (query: TextTranslateQuery) => {
       message: "不支持该语种",
       addition: "不支持该语种",
     });
+    return false;
   }
+
+  return true;
 };

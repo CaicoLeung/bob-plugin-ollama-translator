@@ -78,10 +78,11 @@ export function handleGeneralError(query: TextTranslateQuery, error: ServiceErro
     // Handle HTTP response error
     const { statusCode } = error.response;
     const reason = statusCode >= 400 && statusCode < 500 ? "param" : "api";
+    const errorMessage = HTTP_ERROR_CODES[statusCode as keyof typeof HTTP_ERROR_CODES] || `HTTP ${statusCode}`;
     query.onCompletion({
       error: {
         type: reason,
-        message: `接口响应错误 - ${HTTP_ERROR_CODES[statusCode]}`,
+        message: `接口响应错误 - ${errorMessage}`,
         addition: `${JSON.stringify(error)}`,
       },
     });
