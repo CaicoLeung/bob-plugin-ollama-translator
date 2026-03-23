@@ -1,4 +1,5 @@
 declare const $option: {
+  [key: string]: string | undefined;
   service?: string;
   baseUrl?: string;
   openaiApiKey?: string;
