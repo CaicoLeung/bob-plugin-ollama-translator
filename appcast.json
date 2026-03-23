@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "8.2.0",
+      "desc": "重构项目架构",
+      "sha256": "4fcc9e19a415e09d21b6afa27955fc09d316a43a1eaf09d72c2e2fd13a8e854f",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v8.2.0/bob-plugin-ollama-translator-v8.2.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "8.1.0",
       "desc": "将单个apiKey 拆分为多个服务, 各自配置. 解决每次切换服务都要修改apiKey 的痛点",
       "sha256": "3516148a8b3966de45a458e42e74af6b21ff39baa6a9f3198222779fa4ba0ae6",
