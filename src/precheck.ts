@@ -2,11 +2,10 @@ import { TextTranslateQuery } from "@bob-translate/types";
 import { handleGeneralError } from "./util";
 import { langMap } from "./lang";
 
-export const preCheck = (query: TextTranslateQuery): boolean => {
-  const { service, baseUrl, model, customModel } = $option;
+export function preCheck(query: TextTranslateQuery): boolean {
+  const { model, customModel, service, baseUrl } = $option;
 
-  const isCustomModelRequired = model === "custom";
-  if (isCustomModelRequired && !customModel) {
+  if (model === "custom" && !customModel) {
     handleGeneralError(query, {
       type: "param",
       message: "配置错误 - 请确保您在插件配置中填入了正确的自定义模型名称",
@@ -34,4 +33,4 @@ export const preCheck = (query: TextTranslateQuery): boolean => {
   }
 
   return true;
-};
+}

@@ -1,10 +1,7 @@
-import { SupportLanguages } from "./constants";
+import { SUPPORTED_LANGUAGES } from "./constants";
 
-// 获取支持的语种
 export function supportLanguages() {
-  return SupportLanguages.map((item) => item[0]);
+  return SUPPORTED_LANGUAGES.map(([key]) => key);
 }
 
-export const langMap = new Map(
-  SupportLanguages.map(([key, value]) => [key, value]),
-);
+export const langMap = new Map(SUPPORTED_LANGUAGES);
