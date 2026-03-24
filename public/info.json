@@ -162,36 +162,116 @@
           "value": "custom"
         },
         {
-          "title": "qwen3:14b",
-          "value": "qwen3:14b"
+          "title": "─── Ollama ───",
+          "value": "separator_ollama"
+        },
+        {
+          "title": "qwen2.5:7b",
+          "value": "qwen2.5:7b"
         },
         {
           "title": "qwen2.5:14b",
           "value": "qwen2.5:14b"
         },
         {
-          "title": "gemma3:27b",
-          "value": "gemma3:27b"
+          "title": "qwen3:14b",
+          "value": "qwen3:14b"
+        },
+        {
+          "title": "gemma3:4b",
+          "value": "gemma3:4b"
         },
         {
           "title": "gemma3:12b",
           "value": "gemma3:12b"
         },
         {
-          "title": "gpt-4o",
-          "value": "gpt-4o"
+          "title": "gemma3:27b",
+          "value": "gemma3:27b"
+        },
+        {
+          "title": "llama3:8b",
+          "value": "llama3:8b"
+        },
+        {
+          "title": "mistral:7b",
+          "value": "mistral:7b"
+        },
+        {
+          "title": "deepseek-r1:7b",
+          "value": "deepseek-r1:7b"
+        },
+        {
+          "title": "deepseek-v3:latest",
+          "value": "deepseek-v3:latest"
+        },
+        {
+          "title": "─── OpenAI ───",
+          "value": "separator_openai"
         },
         {
           "title": "gpt-4o-mini",
           "value": "gpt-4o-mini"
         },
         {
-          "title": "grok-3-beta",
-          "value": "grok-3-beta"
+          "title": "gpt-4.1-mini",
+          "value": "gpt-4.1-mini"
         },
         {
-          "title": "grok-3-mini-beta",
-          "value": "grok-3-mini-beta"
+          "title": "gpt-4o",
+          "value": "gpt-4o"
+        },
+        {
+          "title": "─── Claude ───",
+          "value": "separator_claude"
+        },
+        {
+          "title": "claude-3-5-haiku-20241022",
+          "value": "claude-3-5-haiku-20241022"
+        },
+        {
+          "title": "claude-3-5-sonnet-20241022",
+          "value": "claude-3-5-sonnet-20241022"
+        },
+        {
+          "title": "─── Grok ───",
+          "value": "separator_grok"
+        },
+        {
+          "title": "grok-3-mini",
+          "value": "grok-3-mini"
+        },
+        {
+          "title": "grok-4-fast-reasoning",
+          "value": "grok-4-fast-reasoning"
+        },
+        {
+          "title": "─── DeepSeek ───",
+          "value": "separator_deepseek"
+        },
+        {
+          "title": "deepseek-chat",
+          "value": "deepseek-chat"
+        },
+        {
+          "title": "deepseek-reasoner",
+          "value": "deepseek-reasoner"
+        },
+        {
+          "title": "─── Gemini ───",
+          "value": "separator_gemini"
+        },
+        {
+          "title": "gemini-2.0-flash-lite",
+          "value": "gemini-2.0-flash-lite"
+        },
+        {
+          "title": "gemini-2.5-flash-lite-preview",
+          "value": "gemini-2.5-flash-lite-preview"
+        },
+        {
+          "title": "gemini-2.5-flash",
+          "value": "gemini-2.5-flash"
         }
       ]
     },
