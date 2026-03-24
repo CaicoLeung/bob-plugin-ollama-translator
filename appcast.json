@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "8.3.0",
+      "desc": "update model options with provider separators and new models",
+      "sha256": "afe15b1ba18e893d32615495bfa1b812df6d1213f6d2956898d3c4de7ff4a942",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v8.3.0/bob-plugin-ollama-translator-v8.3.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "8.2.0",
       "desc": "重构项目架构",
       "sha256": "4fcc9e19a415e09d21b6afa27955fc09d316a43a1eaf09d72c2e2fd13a8e854f",
