@@ -4,6 +4,7 @@ export const SERVICE_BASE_URLS: Record<string, string> = {
   gemini: "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
   grok: "https://api.x.ai/v1/chat/completions",
   deepseek: "https://api.deepseek.com/chat/completions",
+  zhipu: "https://open.bigmodel.cn/api/paas/v4/chat/completions",
   ollama: "http://localhost:11434/v1/chat/completions",
 };
 
@@ -13,6 +14,7 @@ const API_KEY_OPTIONS: Record<string, keyof typeof $option> = {
   claude: "claudeApiKey",
   deepseek: "deepseekApiKey",
   gemini: "geminiApiKey",
+  zhipu: "zhipuApiKey",
   other: "otherApiKey",
 };
 
