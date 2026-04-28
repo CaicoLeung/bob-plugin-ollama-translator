@@ -1,7 +1,7 @@
 {
   "identifier": "bob-plugin-ollama-translator",
   "category": "translate",
-  "version": "8.3.0",
+  "version": "8.4.0",
   "name": "AI单词/翻译/百科解释",
   "summary": "支持多种AI服务（Ollama/OpenAI/Grok/Claude/Gemini等）的翻译和解释插件，可进行单词翻译、文本翻译及百科解释",
   "author": "Caico",
@@ -223,40 +223,60 @@
           "value": "separator_openai"
         },
         {
-          "title": "gpt-4o-mini",
-          "value": "gpt-4o-mini"
+          "title": "gpt-4.1",
+          "value": "gpt-4.1"
         },
         {
           "title": "gpt-4.1-mini",
           "value": "gpt-4.1-mini"
         },
         {
+          "title": "gpt-4.1-nano",
+          "value": "gpt-4.1-nano"
+        },
+        {
           "title": "gpt-4o",
           "value": "gpt-4o"
+        },
+        {
+          "title": "gpt-4o-mini",
+          "value": "gpt-4o-mini"
+        },
+        {
+          "title": "o3",
+          "value": "o3"
+        },
+        {
+          "title": "o3-mini",
+          "value": "o3-mini"
         },
         {
           "title": "─── Claude ───",
           "value": "separator_claude"
         },
         {
-          "title": "claude-3-5-haiku-20241022",
-          "value": "claude-3-5-haiku-20241022"
+          "title": "claude-4-6-sonnet-20250514",
+          "value": "claude-4-6-sonnet-20250514"
         },
         {
-          "title": "claude-3-5-sonnet-20241022",
-          "value": "claude-3-5-sonnet-20241022"
+          "title": "claude-4-5-haiku-20241022",
+          "value": "claude-4-5-haiku-20241022"
+        },
+        {
+          "title": "claude-4-opus-20250514",
+          "value": "claude-4-opus-20250514"
         },
         {
           "title": "─── Grok ───",
           "value": "separator_grok"
         },
         {
-          "title": "grok-3-mini",
-          "value": "grok-3-mini"
+          "title": "grok-3",
+          "value": "grok-3"
         },
         {
-          "title": "grok-4-fast-reasoning",
-          "value": "grok-4-fast-reasoning"
+          "title": "grok-3-mini",
+          "value": "grok-3-mini"
         },
         {
           "title": "─── DeepSeek ───",
@@ -275,28 +295,36 @@
           "value": "separator_gemini"
         },
         {
-          "title": "gemini-2.0-flash-lite",
-          "value": "gemini-2.0-flash-lite"
-        },
-        {
-          "title": "gemini-2.5-flash-lite-preview",
-          "value": "gemini-2.5-flash-lite-preview"
+          "title": "gemini-2.5-pro",
+          "value": "gemini-2.5-pro"
         },
         {
           "title": "gemini-2.5-flash",
           "value": "gemini-2.5-flash"
         },
         {
+          "title": "gemini-2.5-flash-lite",
+          "value": "gemini-2.5-flash-lite"
+        },
+        {
+          "title": "gemini-2.0-flash",
+          "value": "gemini-2.0-flash"
+        },
+        {
           "title": "─── Zhipu ───",
           "value": "separator_zhipu"
         },
         {
-          "title": "glm-4-flash",
-          "value": "glm-4-flash"
+          "title": "glm-4.7",
+          "value": "glm-4.7"
         },
         {
-          "title": "glm-4-flashx",
-          "value": "glm-4-flashx"
+          "title": "glm-4.7-flash",
+          "value": "glm-4.7-flash"
+        },
+        {
+          "title": "glm-4.7-flashx",
+          "value": "glm-4.7-flashx"
         },
         {
           "title": "glm-4-plus",
