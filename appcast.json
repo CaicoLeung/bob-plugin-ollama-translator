@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "8.4.0",
+      "desc": "Add Zhipu AI provider;",
+      "sha256": "7171bf0f10646051a81cf0f9337ec0093fc186ef99a05890d967d12f2041f37f",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v8.4.0/bob-plugin-ollama-translator-v8.4.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "8.3.0",
       "desc": "update model options with provider separators and new models",
       "sha256": "afe15b1ba18e893d32615495bfa1b812df6d1213f6d2956898d3c4de7ff4a942",
