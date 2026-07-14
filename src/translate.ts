@@ -16,7 +16,7 @@ const FINISH_SUFFIXES: Record<string, string> = {
 function buildResult(query: TextTranslateQuery, text: string) {
   return {
     result: {
-      thinkInfo: { splitThinkTag: true },
+      thinkInfo: { content: "", splitThinkTag: true },
       from: query.detectFrom,
       to: query.detectTo,
       toParagraphs: [text],
@@ -98,7 +98,8 @@ export async function translate(query: TextTranslateQuery) {
             type: "secretKey",
             message: "配置错误 - 请确保您在插件配置中填入了正确的 API Keys",
             addition: "请在插件配置中填写正确的 API Keys",
-            troubleshootingLink: "https://bobtranslate.com/service/translate/openai.html",
+            troubleshootingLink:
+              "https://bobtranslate.com/service/translate/openai.html",
           });
           return;
         }
