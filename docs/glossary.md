@@ -15,6 +15,7 @@ String identifier sent in the API request body (e.g., `gpt-5`, `claude-sonnet-5`
 ### Menu value
 
 An entry in the `menuValues` array of the `model` option in `public/info.json`. May be:
+
 - A real model ID (e.g., `gpt-5`)
 - A sentinel (`custom` for user-supplied model)
 - A separator (`separator_openai`) for visual grouping

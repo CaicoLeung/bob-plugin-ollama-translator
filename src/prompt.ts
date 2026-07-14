@@ -11,7 +11,8 @@ const DEFAULT_WORD_PROMPT = `
 7. 文化或历史背景: 提供任何相关的文化或历史信息，以帮助理解该词的使用或意义。
 `.trim();
 
-const DEFAULT_TRANSLATE_PROMPT = "Translate the following text to {targetLang}: {sourceText}";
+const DEFAULT_TRANSLATE_PROMPT =
+  "Translate the following text to {targetLang}: {sourceText}";
 
 const SYSTEM_PROMPTS: Record<string, (isWord: boolean) => string> = {
   translate: (isWord) =>
@@ -26,7 +27,10 @@ function isEnglishWord(text: string): boolean {
   return text.split(" ").length === 1 && /^[a-zA-Z]+$/.test(text);
 }
 
-function renderTemplate(template: string, data: Record<string, string>): string {
+function renderTemplate(
+  template: string,
+  data: Record<string, string>,
+): string {
   return template.replace(/\{([^}]+)\}/g, (_, key) =>
     Object.prototype.hasOwnProperty.call(data, key) ? data[key] : "",
   );
@@ -47,8 +51,8 @@ export function generateUserPrompt(query: TextTranslateQuery): string {
   if (pattern === "translate") {
     const isWord = isEnglishWord(query.text.trim());
     const template = isWord
-      ? ($option.wordPrompt || DEFAULT_WORD_PROMPT)
-      : ($option.prompt || DEFAULT_TRANSLATE_PROMPT);
+      ? $option.wordPrompt || DEFAULT_WORD_PROMPT
+      : $option.prompt || DEFAULT_TRANSLATE_PROMPT;
     return renderTemplate(template, vars);
   }
 

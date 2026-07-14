@@ -32,6 +32,7 @@ bun scripts/build.ts        # Using bun
 ```
 
 The build process:
+
 1. Cleans `dist/` directory
 2. Bundles TypeScript to CommonJS via Rollup
 3. Copies `public/icon.png` and `public/info.json` to `dist/`
@@ -68,21 +69,22 @@ translate.ts (main orchestration)
 
 ### Key Modules
 
-| File | Purpose |
-|------|---------|
-| `translate.ts` | Main translation logic: streaming, completion handling, error reporting |
-| `service.ts` | Maps service names to base URLs and API key options |
-| `params.ts` | Builds request payload; special-cases Qwen MT (no system prompt) |
-| `prompt.ts` | Generates prompts for translate vs interpret modes; detects English words for detailed explanations |
-| `parser.ts` | Wraps `eventsource-parser` for SSE chunk parsing |
-| `cache.ts` | In-memory Map-based LRU cache (max 100 entries) |
-| `precheck.ts` | Validates configuration before API calls |
-| `constants.ts` | Service URLs, HTTP error codes, supported languages |
-| `types.d.ts` | Declares `$option` global injected by Bob runtime |
+| File           | Purpose                                                                                             |
+| -------------- | --------------------------------------------------------------------------------------------------- |
+| `translate.ts` | Main translation logic: streaming, completion handling, error reporting                             |
+| `service.ts`   | Maps service names to base URLs and API key options                                                 |
+| `params.ts`    | Builds request payload; special-cases Qwen MT (no system prompt)                                    |
+| `prompt.ts`    | Generates prompts for translate vs interpret modes; detects English words for detailed explanations |
+| `parser.ts`    | Wraps `eventsource-parser` for SSE chunk parsing                                                    |
+| `cache.ts`     | In-memory Map-based LRU cache (max 100 entries)                                                     |
+| `precheck.ts`  | Validates configuration before API calls                                                            |
+| `constants.ts` | Service URLs, HTTP error codes, supported languages                                                 |
+| `types.d.ts`   | Declares `$option` global injected by Bob runtime                                                   |
 
 ### Service Configuration
 
 Services are configured in `public/info.json`. When adding a new service:
+
 1. Add to `SERVICE_BASE_URLS` in `constants.ts`
 2. Add to `API_KEY_OPTIONS` mapping in `constants.ts`
 3. Add menu option in `info.json`

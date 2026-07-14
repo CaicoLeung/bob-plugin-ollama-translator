@@ -13,7 +13,11 @@ export function createStreamParser({ onChunk, onError }: ParserCallbacks) {
         const chunk = JSON.parse(event.data) as OpenAI.Chat.ChatCompletionChunk;
         onChunk(chunk);
       } catch (error) {
-        onError(error instanceof Error ? error : new Error("Failed to parse event data"));
+        onError(
+          error instanceof Error
+            ? error
+            : new Error("Failed to parse event data"),
+        );
       }
     },
     onError,

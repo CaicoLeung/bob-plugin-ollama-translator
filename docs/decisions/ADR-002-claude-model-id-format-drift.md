@@ -27,6 +27,7 @@ The plugin's existing strings do not match. They may have been derived from a pr
 Per [ADR-001](ADR-001-model-menu-refresh-policy.md) (additive-only refresh), do NOT rewrite the existing strings in this refresh cycle. Add new, correctly-formatted Claude IDs alongside the existing ones.
 
 New additions in v8.5.0:
+
 - `claude-sonnet-5`
 - `claude-opus-4-8`
 - `claude-opus-4-7`
@@ -42,6 +43,7 @@ New additions in v8.5.0:
 ## Follow-up
 
 Open a separate issue to:
+
 1. Verify which legacy Claude strings actually work against the live API.
 2. Decide on a removal/migration path for broken legacy strings.
 3. Schedule removal in a future minor or major bump.

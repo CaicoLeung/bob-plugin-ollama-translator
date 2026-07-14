@@ -11,7 +11,10 @@ export function getCachedResult(query: TextTranslateQuery): string | null {
   return records.get(cacheKey(query)) ?? null;
 }
 
-export function setCachedResult(query: TextTranslateQuery, value: string): void {
+export function setCachedResult(
+  query: TextTranslateQuery,
+  value: string,
+): void {
   records.set(cacheKey(query), value);
   if (records.size > MAX_RECORDS) {
     const oldest = records.keys().next().value;
