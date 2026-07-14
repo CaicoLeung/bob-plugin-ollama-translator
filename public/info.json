@@ -1,7 +1,7 @@
 {
   "identifier": "bob-plugin-ollama-translator",
   "category": "translate",
-  "version": "8.4.0",
+  "version": "8.6.0",
   "name": "AI单词/翻译/百科解释",
   "summary": "支持多种AI服务（Ollama/OpenAI/Grok/Claude/Gemini等）的翻译和解释插件，可进行单词翻译、文本翻译及百科解释",
   "author": "Caico",
@@ -187,8 +187,16 @@
           "value": "qwen2.5:14b"
         },
         {
+          "title": "qwen3:4b",
+          "value": "qwen3:4b"
+        },
+        {
           "title": "qwen3:14b",
           "value": "qwen3:14b"
+        },
+        {
+          "title": "qwen3:32b",
+          "value": "qwen3:32b"
         },
         {
           "title": "gemma3:4b",
@@ -207,12 +215,24 @@
           "value": "llama3:8b"
         },
         {
+          "title": "llama3.3:70b",
+          "value": "llama3.3:70b"
+        },
+        {
           "title": "mistral:7b",
           "value": "mistral:7b"
         },
         {
+          "title": "mistral-nemo",
+          "value": "mistral-nemo"
+        },
+        {
           "title": "deepseek-r1:7b",
           "value": "deepseek-r1:7b"
+        },
+        {
+          "title": "deepseek-r1:14b",
+          "value": "deepseek-r1:14b"
         },
         {
           "title": "deepseek-v3:latest",
@@ -221,6 +241,22 @@
         {
           "title": "─── OpenAI ───",
           "value": "separator_openai"
+        },
+        {
+          "title": "gpt-5.6",
+          "value": "gpt-5.6"
+        },
+        {
+          "title": "gpt-5",
+          "value": "gpt-5"
+        },
+        {
+          "title": "gpt-5-mini",
+          "value": "gpt-5-mini"
+        },
+        {
+          "title": "gpt-5-nano",
+          "value": "gpt-5-nano"
         },
         {
           "title": "gpt-4.1",
@@ -255,20 +291,36 @@
           "value": "separator_claude"
         },
         {
-          "title": "claude-4-6-sonnet-20250514",
-          "value": "claude-4-6-sonnet-20250514"
+          "title": "claude-fable-5",
+          "value": "claude-fable-5"
         },
         {
-          "title": "claude-4-5-haiku-20241022",
-          "value": "claude-4-5-haiku-20241022"
+          "title": "claude-opus-4-8",
+          "value": "claude-opus-4-8"
         },
         {
-          "title": "claude-4-opus-20250514",
-          "value": "claude-4-opus-20250514"
+          "title": "claude-opus-4-7",
+          "value": "claude-opus-4-7"
+        },
+        {
+          "title": "claude-sonnet-5",
+          "value": "claude-sonnet-5"
+        },
+        {
+          "title": "claude-haiku-4-5",
+          "value": "claude-haiku-4-5"
         },
         {
           "title": "─── Grok ───",
           "value": "separator_grok"
+        },
+        {
+          "title": "grok-4.5",
+          "value": "grok-4.5"
+        },
+        {
+          "title": "grok-4.3",
+          "value": "grok-4.3"
         },
         {
           "title": "grok-3",
@@ -283,6 +335,14 @@
           "value": "separator_deepseek"
         },
         {
+          "title": "deepseek-v4-pro",
+          "value": "deepseek-v4-pro"
+        },
+        {
+          "title": "deepseek-v4-flash",
+          "value": "deepseek-v4-flash"
+        },
+        {
           "title": "deepseek-chat",
           "value": "deepseek-chat"
         },
@@ -293,6 +353,18 @@
         {
           "title": "─── Gemini ───",
           "value": "separator_gemini"
+        },
+        {
+          "title": "gemini-3.5-flash",
+          "value": "gemini-3.5-flash"
+        },
+        {
+          "title": "gemini-3.1-pro-preview",
+          "value": "gemini-3.1-pro-preview"
+        },
+        {
+          "title": "gemini-flash-latest",
+          "value": "gemini-flash-latest"
         },
         {
           "title": "gemini-2.5-pro",
@@ -315,6 +387,18 @@
           "value": "separator_zhipu"
         },
         {
+          "title": "glm-5.2",
+          "value": "glm-5.2"
+        },
+        {
+          "title": "glm-5.1",
+          "value": "glm-5.1"
+        },
+        {
+          "title": "glm-5",
+          "value": "glm-5"
+        },
+        {
           "title": "glm-4.7",
           "value": "glm-4.7"
         },
@@ -325,6 +409,10 @@
         {
           "title": "glm-4.7-flashx",
           "value": "glm-4.7-flashx"
+        },
+        {
+          "title": "glm-4.6",
+          "value": "glm-4.6"
         },
         {
           "title": "glm-4-plus",

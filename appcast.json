@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "8.5.0",
+      "desc": "更新各服务最新模型列表 (gpt-5, claude-sonnet-5, gemini-3.5-flash, grok-4.5, deepseek-v4, glm-5.2 等); 新增 Ollama qwen3:32b / llama3.3:70b 等标签。策略见 docs/decisions/ADR-001-model-menu-refresh-policy.md",
+      "sha256": "63ccdab137d60e8986b91fc00737c5f2a2e88a738ba0cddad306c7290543f875",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v8.5.0/bob-plugin-ollama-translator-v8.5.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "8.4.0",
       "desc": "Add Zhipu AI provider;",
       "sha256": "7171bf0f10646051a81cf0f9337ec0093fc186ef99a05890d967d12f2041f37f",
