@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Agent skills
+
+### Issue tracker
+
+GitHub issues (`gh` CLI). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Defaults kept. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context. See `docs/agents/domain.md`.
+
 ## Project Overview
 
 Bob translator plugin supporting multiple AI services (Ollama, OpenAI, Grok, Claude, DeepSeek, Gemini). Provides translation and interpretation modes with streaming responses.
