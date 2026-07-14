@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "8.6.0",
+      "desc": "v8.6.0: 刷新各服务模型列表 + 修复 Claude 模型 ID 格式\n\n新增/更新模型 (v8.5.0 additive refresh, ADR-001):\n- OpenAI: gpt-5.6 / gpt-5 / gpt-5-mini / gpt-5-nano\n- Claude: claude-sonnet-5 / claude-opus-4-8 / claude-opus-4-7 / claude-haiku-4-5 / claude-fable-5\n- Grok: grok-4.5 / grok-4.3\n- DeepSeek: deepseek-v4-pro / deepseek-v4-flash\n- Gemini: gemini-3.5-flash / gemini-3.1-pro-preview / gemini-flash-latest\n- Zhipu: glm-5.2 / glm-5.1 / glm-5 / glm-4.7 series\n- Ollama: qwen3:4b / qwen3:32b / llama3.3:70b / mistral-nemo / deepseek-r1:14b\n\n移除格式错误的 Claude 模型 ID (issue #9):\n- claude-4-6-sonnet-20250514\n- claude-4-5-haiku-20241022\n- claude-4-opus-20250514\n\n受影响用户需重新选择 Claude 模型。详见 docs/decisions/ADR-002-claude-model-id-format-drift.md",
+      "sha256": "ada6b7c0f30b6aa6cb38b1def116969a202091c78d788f5125252125a17c5a66",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v8.6.0/bob-plugin-ollama-translator-v8.6.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "8.5.0",
       "desc": "更新各服务最新模型列表 (gpt-5, claude-sonnet-5, gemini-3.5-flash, grok-4.5, deepseek-v4, glm-5.2 等); 新增 Ollama qwen3:32b / llama3.3:70b 等标签。策略见 docs/decisions/ADR-001-model-menu-refresh-policy.md",
       "sha256": "63ccdab137d60e8986b91fc00737c5f2a2e88a738ba0cddad306c7290543f875",
