@@ -1,10 +1,14 @@
 import { TextTranslateQuery } from "@bob-translate/types";
 import { generateUserPrompt, generateSystemPrompt } from "./prompt";
+import { getModel } from "./service";
+import type { Provider } from "./service";
 
-export function buildRequestParams(query: TextTranslateQuery) {
-  const { model, customModel } = $option;
-  const finalModel = model === "custom" ? customModel : model;
-  const isQwenMT = /qwen-mt/.test(finalModel || "");
+export function buildRequestParams(
+  query: TextTranslateQuery,
+  service: Provider,
+) {
+  const finalModel = getModel(service);
+  const isQwenMT = /qwen-mt/.test(finalModel);
 
   const messages = isQwenMT
     ? [{ role: "user", content: query.text }]

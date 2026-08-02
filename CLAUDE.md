@@ -72,22 +72,35 @@ translate.ts (main orchestration)
 | File           | Purpose                                                                                             |
 | -------------- | --------------------------------------------------------------------------------------------------- |
 | `translate.ts` | Main translation logic: streaming, completion handling, error reporting                             |
-| `service.ts`   | Maps service names to base URLs and API key options                                                 |
+| `service.ts`   | `Provider` registry; resolves a provider's base URL, API-key option, and model                      |
 | `params.ts`    | Builds request payload; special-cases Qwen MT (no system prompt)                                    |
 | `prompt.ts`    | Generates prompts for translate vs interpret modes; detects English words for detailed explanations |
 | `parser.ts`    | Wraps `eventsource-parser` for SSE chunk parsing                                                    |
 | `cache.ts`     | In-memory Map-based LRU cache (max 100 entries)                                                     |
 | `precheck.ts`  | Validates configuration before API calls                                                            |
-| `constants.ts` | Service URLs, HTTP error codes, supported languages                                                 |
+| `constants.ts` | HTTP error codes, supported languages                                                               |
 | `types.d.ts`   | Declares `$option` global injected by Bob runtime                                                   |
 
 ### Service Configuration
 
-Services are configured in `public/info.json`. When adding a new service:
+Providers are a closed set — the `Provider` type and `PROVIDERS` array in
+`service.ts` are the single source of truth (see `docs/glossary.md`, term:
+Provider); `public/info.json` renders them into menus. When adding a provider:
 
-1. Add to `SERVICE_BASE_URLS` in `constants.ts`
-2. Add to `API_KEY_OPTIONS` mapping in `constants.ts`
-3. Add menu option in `info.json`
+1. Add its id to the `Provider` union and `PROVIDERS` array in `service.ts`.
+2. Add an `${id}Model` (menu) and `${id}CustomModel` (text) option to
+   `public/info.json`, and declare both fields in `src/types.d.ts` and in the
+   `MODEL_OPTIONS` map in `service.ts`.
+3. If it has a fixed endpoint, add it to `SERVICE_BASE_URLS` in `service.ts`
+   (omit for providers that reuse the user-supplied `baseUrl`, e.g. `other`).
+4. If it needs an API key, add an `${id}ApiKey` text option to `info.json`,
+   declare it in `types.d.ts`, and map it in `API_KEY_OPTIONS` in `service.ts`
+   (omit for keyless providers, e.g. `ollama`).
+5. Add the provider as a value in the `服务` (`service`) menu in `info.json`.
+
+`ollama` (local, no key) and `other` (user URL) are intentionally asymmetric —
+`SERVICE_BASE_URLS` and `API_KEY_OPTIONS` are `Partial<Record<Provider, …>>` to
+express that.
 
 ### Modes
 

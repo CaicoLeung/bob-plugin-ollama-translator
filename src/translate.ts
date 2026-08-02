@@ -1,6 +1,6 @@
 import { ServiceError, TextTranslateQuery } from "@bob-translate/types";
 import { handleGeneralError } from "./util";
-import { getApiKey, getServiceUrl } from "./service";
+import { getApiKey, getServiceUrl, asProvider } from "./service";
 import { getCachedResult, setCachedResult } from "./cache";
 import { preCheck } from "./precheck";
 import { buildRequestParams } from "./params";
@@ -25,7 +25,7 @@ function buildResult(query: TextTranslateQuery, text: string) {
 }
 
 export async function translate(query: TextTranslateQuery) {
-  const { service = "ollama" } = $option;
+  const service = asProvider($option.service);
   const url = getServiceUrl(service);
   const apiKey = getApiKey(service);
 
@@ -46,7 +46,7 @@ export async function translate(query: TextTranslateQuery) {
 
   if (!preCheck(query)) return;
 
-  const { params } = buildRequestParams(query);
+  const { params } = buildRequestParams(query, service);
   let accumulated = "";
   let completed = false;
 

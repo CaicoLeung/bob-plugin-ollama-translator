@@ -14,23 +14,19 @@ String identifier sent in the API request body (e.g., `gpt-5`, `claude-sonnet-5`
 
 ### Menu value
 
-An entry in the `menuValues` array of the `model` option in `public/info.json`. May be:
-
-- A real model ID (e.g., `gpt-5`)
-- A sentinel (`custom` for user-supplied model)
-- A separator (`separator_openai`) for visual grouping
+An entry in the `menuValues` array of a `<service>Model` option in `public/info.json`. May be a real model ID (e.g., `gpt-5`) or the `custom` sentinel (for a user-supplied model).
 
 ### Default model
 
-The top-level `defaultValue` field of the `model` option. Currently `qwen2.5:14b`. Applies to fresh installs only. Bob stores user selections by string value; once changed, the changed value persists.
+The `defaultValue` of a provider's `<service>Model` menu in `public/info.json` (e.g., `qwen2.5:14b` for Ollama). Applies to fresh installs only; Bob stores user selections by string value, so once changed the new value persists.
 
 ### Custom model
 
-Free-text value supplied via the `customModel` option. Takes precedence when the model menu is set to `custom`. Acts as the escape hatch for models not on the menu.
+Free-text value supplied via a provider's `<service>CustomModel` option. Takes effect only when that provider's `<service>Model` menu is set to `custom`. Escape hatch for models not on the menu.
 
 ### Separator
 
-Non-selectable `menuValues` entry used to group models by provider in the UI. Conventional values: `separator_ollama`, `separator_openai`, `separator_claude`, `separator_grok`, `separator_deepseek`, `separator_gemini`, `separator_zhipu`.
+_(Removed in v9.0.0.)_ Formerly a non-selectable `menuValues` entry used to group models by provider within a single global model menu. Per-provider model menus (v9.0.0) made separators redundant.
 
 ### Model tier
 

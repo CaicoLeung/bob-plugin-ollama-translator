@@ -24,7 +24,10 @@ def update_appcast(version, desc):
             appcast = json.load(f)
     else:
         appcast = dict(identifier='bob-plugin-ollama-translator', versions=[])
-    appcast['versions'].insert(0, version_info)
+    appcast["versions"] = [
+        v for v in appcast["versions"] if v.get("version") != version
+    ]
+    appcast["versions"].insert(0, version_info)
     with open(appcast_file, 'w') as f:
         json.dump(appcast, f, ensure_ascii=False, indent=2)
 

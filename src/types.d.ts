@@ -1,5 +1,4 @@
 declare const $option: {
-  [key: string]: string | undefined;
   service?: string;
   baseUrl?: string;
   openaiApiKey?: string;
@@ -7,9 +6,24 @@ declare const $option: {
   claudeApiKey?: string;
   deepseekApiKey?: string;
   geminiApiKey?: string;
+  zhipuApiKey?: string;
   otherApiKey?: string;
-  model?: string;
-  customModel?: string;
+  ollamaModel?: string;
+  ollamaCustomModel?: string;
+  openaiModel?: string;
+  openaiCustomModel?: string;
+  grokModel?: string;
+  grokCustomModel?: string;
+  claudeModel?: string;
+  claudeCustomModel?: string;
+  deepseekModel?: string;
+  deepseekCustomModel?: string;
+  geminiModel?: string;
+  geminiCustomModel?: string;
+  zhipuModel?: string;
+  zhipuCustomModel?: string;
+  otherModel?: string;
+  otherCustomModel?: string;
   pattern?: string;
   prompt?: string;
   wordPrompt?: string;

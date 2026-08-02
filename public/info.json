@@ -1,7 +1,7 @@
 {
   "identifier": "bob-plugin-ollama-translator",
   "category": "translate",
-  "version": "8.6.0",
+  "version": "9.0.0",
   "name": "AI单词/翻译/百科解释",
   "summary": "支持多种AI服务（Ollama/OpenAI/Grok/Claude/Gemini等）的翻译和解释插件，可进行单词翻译、文本翻译及百科解释",
   "author": "Caico",
@@ -62,121 +62,15 @@
       }
     },
     {
-      "identifier": "openaiApiKey",
-      "type": "text",
-      "title": "OpenAI API KEY",
-      "desc": "OpenAI 服务的 API KEY",
-      "textConfig": {
-        "placeholderText": "例如: sk-proj-1234567890"
-      }
-    },
-    {
-      "identifier": "grokApiKey",
-      "type": "text",
-      "title": "Grok API KEY",
-      "desc": "Grok 服务的 API KEY",
-      "textConfig": {
-        "placeholderText": "例如: xai-1234567890"
-      }
-    },
-    {
-      "identifier": "claudeApiKey",
-      "type": "text",
-      "title": "Claude API KEY",
-      "desc": "Claude 服务的 API KEY",
-      "textConfig": {
-        "placeholderText": "例如: sk-ant-1234567890"
-      }
-    },
-    {
-      "identifier": "deepseekApiKey",
-      "type": "text",
-      "title": "DeepSeek API KEY",
-      "desc": "DeepSeek 服务的 API KEY",
-      "textConfig": {
-        "placeholderText": "例如: sk-1234567890"
-      }
-    },
-    {
-      "identifier": "geminiApiKey",
-      "type": "text",
-      "title": "Gemini API KEY",
-      "desc": "Gemini 服务的 API KEY",
-      "textConfig": {
-        "placeholderText": "例如: AIzaSy..."
-      }
-    },
-    {
-      "identifier": "zhipuApiKey",
-      "type": "text",
-      "title": "Zhipu API KEY",
-      "desc": "Zhipu (智谱AI) 服务的 API KEY",
-      "textConfig": {
-        "placeholderText": "例如: 5f3d2..."
-      }
-    },
-    {
-      "identifier": "otherApiKey",
-      "type": "text",
-      "title": "其他服务 API KEY",
-      "desc": "选择「其他」服务时使用的 API KEY",
-      "textConfig": {
-        "placeholderText": "例如: sk-1234567890"
-      }
-    },
-    {
-      "identifier": "pattern",
+      "identifier": "ollamaModel",
       "type": "menu",
-      "title": "模式",
-      "defaultValue": "translate",
-      "desc": "选择翻译模式或解释模式",
-      "menuValues": [
-        {
-          "title": "翻译模式",
-          "value": "translate"
-        },
-        {
-          "title": "解释模式",
-          "value": "interpret"
-        }
-      ]
-    },
-    {
-      "identifier": "prompt",
-      "type": "text",
-      "title": "prompt",
-      "desc": "自定义prompt模式，为空时使用默认prompt。源语言为{sourceLang}，目标语言为{targetLang}，原文为{sourceText}。",
-      "textConfig": {
-        "type": "visible",
-        "height": 100,
-        "placeholderText": "请输入prompt"
-      }
-    },
-    {
-      "identifier": "wordPrompt",
-      "type": "text",
-      "title": "单词模式 prompt",
-      "desc": "自定义单词解释模式，为空时使用默认prompt。源语言为{sourceLang}，目标语言为{targetLang}，原文为{sourceText}。",
-      "textConfig": {
-        "type": "visible",
-        "height": 100,
-        "placeholderText": "请输入prompt"
-      }
-    },
-    {
-      "identifier": "model",
-      "type": "menu",
-      "title": "模型",
+      "title": "Ollama 模型",
       "defaultValue": "qwen2.5:14b",
       "desc": "如果选择Ollama模型, 确保你本地已经安装相应模型。",
       "menuValues": [
         {
           "title": "自定义",
           "value": "custom"
-        },
-        {
-          "title": "─── Ollama ───",
-          "value": "separator_ollama"
         },
         {
           "title": "qwen2.5:7b",
@@ -237,14 +131,62 @@
         {
           "title": "deepseek-v3:latest",
           "value": "deepseek-v3:latest"
+        }
+      ]
+    },
+    {
+      "identifier": "ollamaCustomModel",
+      "type": "text",
+      "title": "Ollama 自定义模型",
+      "desc": "仅当 Ollama 模型为自定义时生效",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如: qwen2.5:32b"
+      }
+    },
+    {
+      "identifier": "openaiApiKey",
+      "type": "text",
+      "title": "OpenAI API KEY",
+      "desc": "OpenAI 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: sk-proj-1234567890"
+      }
+    },
+    {
+      "identifier": "openaiModel",
+      "type": "menu",
+      "title": "OpenAI 模型",
+      "defaultValue": "gpt-5-mini",
+      "desc": "选择 OpenAI 模型",
+      "menuValues": [
+        {
+          "title": "自定义",
+          "value": "custom"
         },
         {
-          "title": "─── OpenAI ───",
-          "value": "separator_openai"
+          "title": "gpt-5.6-sol",
+          "value": "gpt-5.6-sol"
         },
         {
-          "title": "gpt-5.6",
-          "value": "gpt-5.6"
+          "title": "gpt-5.6-terra",
+          "value": "gpt-5.6-terra"
+        },
+        {
+          "title": "gpt-5.6-luna",
+          "value": "gpt-5.6-luna"
+        },
+        {
+          "title": "gpt-5.5",
+          "value": "gpt-5.5"
+        },
+        {
+          "title": "gpt-5.4-mini",
+          "value": "gpt-5.4-mini"
+        },
+        {
+          "title": "gpt-5.4-nano",
+          "value": "gpt-5.4-nano"
         },
         {
           "title": "gpt-5",
@@ -277,42 +219,38 @@
         {
           "title": "gpt-4o-mini",
           "value": "gpt-4o-mini"
-        },
+        }
+      ]
+    },
+    {
+      "identifier": "openaiCustomModel",
+      "type": "text",
+      "title": "OpenAI 自定义模型",
+      "desc": "仅当 OpenAI 模型为自定义时生效",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如: gpt-4o-mini"
+      }
+    },
+    {
+      "identifier": "grokApiKey",
+      "type": "text",
+      "title": "Grok API KEY",
+      "desc": "Grok 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: xai-1234567890"
+      }
+    },
+    {
+      "identifier": "grokModel",
+      "type": "menu",
+      "title": "Grok 模型",
+      "defaultValue": "grok-4.5",
+      "desc": "选择 Grok 模型",
+      "menuValues": [
         {
-          "title": "o3",
-          "value": "o3"
-        },
-        {
-          "title": "o3-mini",
-          "value": "o3-mini"
-        },
-        {
-          "title": "─── Claude ───",
-          "value": "separator_claude"
-        },
-        {
-          "title": "claude-fable-5",
-          "value": "claude-fable-5"
-        },
-        {
-          "title": "claude-opus-4-8",
-          "value": "claude-opus-4-8"
-        },
-        {
-          "title": "claude-opus-4-7",
-          "value": "claude-opus-4-7"
-        },
-        {
-          "title": "claude-sonnet-5",
-          "value": "claude-sonnet-5"
-        },
-        {
-          "title": "claude-haiku-4-5",
-          "value": "claude-haiku-4-5"
-        },
-        {
-          "title": "─── Grok ───",
-          "value": "separator_grok"
+          "title": "自定义",
+          "value": "custom"
         },
         {
           "title": "grok-4.5",
@@ -323,16 +261,100 @@
           "value": "grok-4.3"
         },
         {
-          "title": "grok-3",
-          "value": "grok-3"
+          "title": "grok-4.20-0309-reasoning",
+          "value": "grok-4.20-0309-reasoning"
         },
         {
-          "title": "grok-3-mini",
-          "value": "grok-3-mini"
+          "title": "grok-build-0.1",
+          "value": "grok-build-0.1"
+        }
+      ]
+    },
+    {
+      "identifier": "grokCustomModel",
+      "type": "text",
+      "title": "Grok 自定义模型",
+      "desc": "仅当 Grok 模型为自定义时生效",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如: grok-4.5"
+      }
+    },
+    {
+      "identifier": "claudeApiKey",
+      "type": "text",
+      "title": "Claude API KEY",
+      "desc": "Claude 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: sk-ant-1234567890"
+      }
+    },
+    {
+      "identifier": "claudeModel",
+      "type": "menu",
+      "title": "Claude 模型",
+      "defaultValue": "claude-sonnet-5",
+      "desc": "选择 Claude 模型",
+      "menuValues": [
+        {
+          "title": "自定义",
+          "value": "custom"
         },
         {
-          "title": "─── DeepSeek ───",
-          "value": "separator_deepseek"
+          "title": "claude-fable-5",
+          "value": "claude-fable-5"
+        },
+        {
+          "title": "claude-opus-5",
+          "value": "claude-opus-5"
+        },
+        {
+          "title": "claude-sonnet-5",
+          "value": "claude-sonnet-5"
+        },
+        {
+          "title": "claude-haiku-4-5",
+          "value": "claude-haiku-4-5"
+        },
+        {
+          "title": "claude-opus-4-8",
+          "value": "claude-opus-4-8"
+        },
+        {
+          "title": "claude-opus-4-7",
+          "value": "claude-opus-4-7"
+        }
+      ]
+    },
+    {
+      "identifier": "claudeCustomModel",
+      "type": "text",
+      "title": "Claude 自定义模型",
+      "desc": "仅当 Claude 模型为自定义时生效",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如: claude-sonnet-5"
+      }
+    },
+    {
+      "identifier": "deepseekApiKey",
+      "type": "text",
+      "title": "DeepSeek API KEY",
+      "desc": "DeepSeek 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: sk-1234567890"
+      }
+    },
+    {
+      "identifier": "deepseekModel",
+      "type": "menu",
+      "title": "DeepSeek 模型",
+      "defaultValue": "deepseek-v4-flash",
+      "desc": "选择 DeepSeek 模型",
+      "menuValues": [
+        {
+          "title": "自定义",
+          "value": "custom"
         },
         {
           "title": "deepseek-v4-pro",
@@ -341,30 +363,58 @@
         {
           "title": "deepseek-v4-flash",
           "value": "deepseek-v4-flash"
+        }
+      ]
+    },
+    {
+      "identifier": "deepseekCustomModel",
+      "type": "text",
+      "title": "DeepSeek 自定义模型",
+      "desc": "仅当 DeepSeek 模型为自定义时生效",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如: deepseek-v4-flash"
+      }
+    },
+    {
+      "identifier": "geminiApiKey",
+      "type": "text",
+      "title": "Gemini API KEY",
+      "desc": "Gemini 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: AIzaSy..."
+      }
+    },
+    {
+      "identifier": "geminiModel",
+      "type": "menu",
+      "title": "Gemini 模型",
+      "defaultValue": "gemini-3.5-flash",
+      "desc": "选择 Gemini 模型",
+      "menuValues": [
+        {
+          "title": "自定义",
+          "value": "custom"
         },
         {
-          "title": "deepseek-chat",
-          "value": "deepseek-chat"
-        },
-        {
-          "title": "deepseek-reasoner",
-          "value": "deepseek-reasoner"
-        },
-        {
-          "title": "─── Gemini ───",
-          "value": "separator_gemini"
+          "title": "gemini-3.6-flash",
+          "value": "gemini-3.6-flash"
         },
         {
           "title": "gemini-3.5-flash",
           "value": "gemini-3.5-flash"
         },
         {
-          "title": "gemini-3.1-pro-preview",
-          "value": "gemini-3.1-pro-preview"
+          "title": "gemini-3.5-flash-lite",
+          "value": "gemini-3.5-flash-lite"
         },
         {
-          "title": "gemini-flash-latest",
-          "value": "gemini-flash-latest"
+          "title": "gemini-3.1-flash-lite",
+          "value": "gemini-3.1-flash-lite"
+        },
+        {
+          "title": "gemini-3.1-pro-preview",
+          "value": "gemini-3.1-pro-preview"
         },
         {
           "title": "gemini-2.5-pro",
@@ -377,14 +427,38 @@
         {
           "title": "gemini-2.5-flash-lite",
           "value": "gemini-2.5-flash-lite"
-        },
+        }
+      ]
+    },
+    {
+      "identifier": "geminiCustomModel",
+      "type": "text",
+      "title": "Gemini 自定义模型",
+      "desc": "仅当 Gemini 模型为自定义时生效",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如: gemini-3.5-flash"
+      }
+    },
+    {
+      "identifier": "zhipuApiKey",
+      "type": "text",
+      "title": "Zhipu API KEY",
+      "desc": "Zhipu (智谱AI) 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: 5f3d2..."
+      }
+    },
+    {
+      "identifier": "zhipuModel",
+      "type": "menu",
+      "title": "Zhipu 模型",
+      "defaultValue": "glm-5.2",
+      "desc": "选择智谱模型",
+      "menuValues": [
         {
-          "title": "gemini-2.0-flash",
-          "value": "gemini-2.0-flash"
-        },
-        {
-          "title": "─── Zhipu ───",
-          "value": "separator_zhipu"
+          "title": "自定义",
+          "value": "custom"
         },
         {
           "title": "glm-5.2",
@@ -397,6 +471,10 @@
         {
           "title": "glm-5",
           "value": "glm-5"
+        },
+        {
+          "title": "glm-5-turbo",
+          "value": "glm-5-turbo"
         },
         {
           "title": "glm-4.7",
@@ -415,28 +493,91 @@
           "value": "glm-4.6"
         },
         {
-          "title": "glm-4-plus",
-          "value": "glm-4-plus"
-        },
-        {
-          "title": "glm-4-air",
-          "value": "glm-4-air"
-        },
-        {
-          "title": "glm-4",
-          "value": "glm-4"
+          "title": "glm-4.5-air",
+          "value": "glm-4.5-air"
         }
       ]
     },
     {
-      "identifier": "customModel",
+      "identifier": "zhipuCustomModel",
       "type": "text",
-      "title": "自定义模型",
+      "title": "Zhipu 自定义模型",
+      "desc": "仅当智谱模型为自定义时生效",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如: glm-5.2"
+      }
+    },
+    {
+      "identifier": "otherApiKey",
+      "type": "text",
+      "title": "其他服务 API KEY",
+      "desc": "选择「其他」服务时使用的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: sk-1234567890"
+      }
+    },
+    {
+      "identifier": "otherModel",
+      "type": "menu",
+      "title": "其他服务模型",
+      "defaultValue": "custom",
+      "desc": "选择「其他」服务时，请使用自定义模型",
+      "menuValues": [
+        {
+          "title": "自定义",
+          "value": "custom"
+        }
+      ]
+    },
+    {
+      "identifier": "otherCustomModel",
+      "type": "text",
+      "title": "其他服务自定义模型",
+      "desc": "选择「其他」服务时，请填写模型名称",
       "textConfig": {
         "type": "visible",
         "placeholderText": "例如: gpt-4o-mini"
-      },
-      "desc": "仅当模型为自定义时生效"
+      }
+    },
+    {
+      "identifier": "pattern",
+      "type": "menu",
+      "title": "模式",
+      "defaultValue": "translate",
+      "desc": "选择翻译模式或解释模式",
+      "menuValues": [
+        {
+          "title": "翻译模式",
+          "value": "translate"
+        },
+        {
+          "title": "解释模式",
+          "value": "interpret"
+        }
+      ]
+    },
+    {
+      "identifier": "prompt",
+      "type": "text",
+      "title": "prompt",
+      "desc": "自定义prompt模式，为空时使用默认prompt。源语言为{sourceLang}，目标语言为{targetLang}，原文为{sourceText}。",
+      "textConfig": {
+        "type": "visible",
+        "height": 100,
+        "placeholderText": "请输入prompt"
+      }
+    },
+    {
+      "identifier": "wordPrompt",
+      "type": "text",
+      "title": "单词模式 prompt",
+      "desc": "自定义单词解释模式，为空时使用默认prompt。源语言为{sourceLang}，目标语言为{targetLang}，原文为{sourceText}。",
+      "textConfig": {
+        "type": "visible",
+        "height": 100,
+        "placeholderText": "请输入prompt"
+      }
     }
   ]
 }
