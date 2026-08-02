@@ -207,6 +207,18 @@
         {
           "title": "gpt-4.1-mini",
           "value": "gpt-4.1-mini"
+        },
+        {
+          "title": "gpt-4.1-nano",
+          "value": "gpt-4.1-nano"
+        },
+        {
+          "title": "gpt-4o",
+          "value": "gpt-4o"
+        },
+        {
+          "title": "gpt-4o-mini",
+          "value": "gpt-4o-mini"
         }
       ]
     },
