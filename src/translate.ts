@@ -46,7 +46,7 @@ export async function translate(query: TextTranslateQuery) {
 
   if (!preCheck(query)) return;
 
-  const { params } = buildRequestParams(query);
+  const { params } = buildRequestParams(query, service);
   let accumulated = "";
   let completed = false;
 

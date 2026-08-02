@@ -27,3 +27,11 @@ export function getApiKey(service: string): string {
 export function getServiceUrl(service: string): string {
   return SERVICE_BASE_URLS[service] || $option.baseUrl || "";
 }
+
+export function getModel(service: string): string {
+  const model = $option[`${service}Model`] as string | undefined;
+  if (model === "custom") {
+    return ($option[`${service}CustomModel`] as string) || "";
+  }
+  return model || "";
+}

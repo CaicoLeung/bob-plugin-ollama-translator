@@ -3,13 +3,14 @@ import { handleGeneralError } from "./util";
 import { langMap } from "./lang";
 
 export function preCheck(query: TextTranslateQuery): boolean {
-  const { model, customModel, service, baseUrl } = $option;
+  const { service = "ollama", baseUrl } = $option;
 
-  if (model === "custom" && !customModel) {
+  const model = $option[`${service}Model`] as string | undefined;
+  if (model === "custom" && !($option[`${service}CustomModel`] as string)) {
     handleGeneralError(query, {
       type: "param",
       message: "配置错误 - 请确保您在插件配置中填入了正确的自定义模型名称",
-      addition: "请在插件配置中填写自定义模型名称",
+      addition: `请在插件配置中填写 ${service} 服务对应的自定义模型名称`,
     });
     return false;
   }
