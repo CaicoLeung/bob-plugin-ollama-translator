@@ -3,8 +3,8 @@
   "versions": [
     {
       "version": "9.0.0",
-      "desc": "v9.0.0: 🔴 破坏性更新 — 模型配置改为按服务分别设置\n\n【重要】旧版本使用的单一「模型」下拉框已移除。更新后您需要在对应服务的模型下拉框中重新选择模型，否则翻译将使用默认模型。\n\n⚡ 迁移步骤（必读）：\n1. 打开 Bob → 偏好设置 → 翻译 → 选择本插件\n2. 找到您使用的服务（如 OpenAI / Claude 等）下方的「模型」下拉框\n3. 重新选择您需要的模型（旧配置不会自动迁移）\n\n✅ 本次改动：\n• 模型选择从「全局单一列表」改为「每个服务独立配置」\n  - 每个服务现在有独立的模型下拉框和自定义模型输入框\n  - 例如：OpenAI 模型下拉框只显示 OpenAI 的模型，Claude 模型下拉框只显示 Claude 的模型\n• 自定义模型也按服务分别保存，切换服务时互不影响\n\n📦 模型列表更新（2026年8月）：\n• OpenAI 新增：gpt-5.6-sol / gpt-5.6-terra / gpt-5.6-luna / gpt-5.5 / gpt-5.4-mini / gpt-5.4-nano\n  移除：gpt-5.6（无效ID）/ o3 / o3-mini（已过时）\n• Claude 新增：claude-opus-5\n• Grok 新增：grok-4.20-0309-reasoning / grok-build-0.1\n  移除：grok-3 / grok-3-mini（已于 2026-05-15 退役）\n• DeepSeek 移除：deepseek-chat / deepseek-reasoner（已于 2026-07-24 退役）\n• Gemini 新增：gemini-3.6-flash / gemini-3.5-flash-lite / gemini-3.1-flash-lite\n  移除：gemini-flash-latest（无效ID）/ gemini-2.0-flash\n• Zhipu 新增：glm-5-turbo / glm-4.5-air\n  移除：glm-4-plus / glm-4-air / glm-4（旧版）",
-      "sha256": "957c899032b6f087085d6de955ad58c25496378e7d5d47b62e8e1136e0b6928d",
+      "desc": "v9.0.0: 破坏性更新 — 模型配置改为按服务分别设置。旧版本单一「模型」下拉框已移除，更新后请在对应服务（OpenAI/Claude 等）的模型下拉框中重新选择模型，旧配置不会自动迁移。同时刷新各服务模型列表并移除已退役/无效的模型 ID。",
+      "sha256": "d612f4c27847310a741f001f619bc5803b660b9e55516aac418845fa69769484",
       "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v9.0.0/bob-plugin-ollama-translator-v9.0.0.bobplugin",
       "minBobVersion": "1.8.0"
     },
