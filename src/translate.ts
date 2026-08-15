@@ -212,21 +212,32 @@ function completeOnce(
   finishReason?: string,
 ) {
   try {
-    const payload = buildResult(query, text, wordLookup);
+    const payload = wordLookup
+      ? buildWordResult(query, text)
+      : buildTextResult(query, text);
     setCachedResult(query, text);
     query.onCompletion(payload);
   } catch (error) {
-    if (!(error instanceof DictParseError)) throw error;
-    const detail = [
-      finishReason && `finish_reason: ${finishReason}`,
-      `模型原始输出（结尾 300 字符）: …${error.raw.slice(-300)}`,
-    ]
-      .filter(Boolean)
-      .join("\n");
+    if (error instanceof DictParseError) {
+      const detail = [
+        finishReason && `finish_reason: ${finishReason}`,
+        `模型原始输出（结尾 300 字符）: …${error.raw.slice(-300)}`,
+      ]
+        .filter(Boolean)
+        .join("\n");
+      handleGeneralError(query, {
+        type: "api",
+        message: "词典结果解析失败 - 模型未返回有效的 JSON 词典数据",
+        addition: detail,
+      } as ServiceError);
+      return;
+    }
+    // Never rethrow across the Bob boundary: an unexpected failure still
+    // completes the query with an error instead of escaping to Bob.
     handleGeneralError(query, {
       type: "api",
-      message: "词典结果解析失败 - 模型未返回有效的 JSON 词典数据",
-      addition: detail,
+      message: error instanceof Error ? error.message : "Unknown error",
+      addition: "翻译过程中发生错误",
     } as ServiceError);
   }
 }
