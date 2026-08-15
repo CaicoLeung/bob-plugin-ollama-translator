@@ -1,10 +1,13 @@
 import { TextTranslateQuery } from "@bob-translate/types";
+import { wordDetail } from "./prompt";
 
 const MAX_RECORDS = 100;
 const records = new Map<string, string>();
 
 function cacheKey(query: TextTranslateQuery): string {
-  return `${query.from}-${query.to}-${query.text.trim()}`;
+  // Word-lookup results differ per detail tier — same word at another tier
+  // must not be served from the other tier's cache entry.
+  return `${query.from}-${query.to}-${query.text.trim()}-${wordDetail()}`;
 }
 
 export function getCachedResult(query: TextTranslateQuery): string | null {

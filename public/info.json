@@ -558,6 +558,27 @@
       ]
     },
     {
+      "identifier": "wordDetail",
+      "type": "menu",
+      "title": "单词详解档位",
+      "defaultValue": "medium",
+      "desc": "单词查询的详细程度：快速（仅核心释义）/ 标准（释义+词源用法例句）/ 详尽（词典级全量），档位越高生成越慢",
+      "menuValues": [
+        {
+          "title": "快速",
+          "value": "fast"
+        },
+        {
+          "title": "标准",
+          "value": "medium"
+        },
+        {
+          "title": "详尽",
+          "value": "full"
+        }
+      ]
+    },
+    {
       "identifier": "prompt",
       "type": "text",
       "title": "prompt",
