@@ -19,6 +19,13 @@ export interface ParsedDict {
       tts: { type: "url"; value: string };
     }>;
     parts: Array<{ part: string; means: string[] }>;
+    // Clickable in Bob's dict UI: clicking a word re-queries it via the
+    // current service (docs/research/bob-todict-clickable-words.md).
+    exchanges?: Array<{ name: string; words: string[] }>;
+    relatedWordParts?: Array<{
+      part?: string;
+      words: Array<{ word: string; means?: string[] }>;
+    }>;
     additions?: Array<{ name: string; value: string }>;
   };
   thinkContent: string;
@@ -51,14 +58,24 @@ function asRecord(value: unknown): Record<string, unknown> | null {
     : null;
 }
 
-function parsePhonetics(
+/** Parse an array of objects, keeping only entries the mapper accepts. */
+function parseEntries<T>(
   value: unknown,
-): Array<{ type: "us" | "uk"; value: string }> {
+  map: (record: Record<string, unknown>) => T[],
+): T[] {
   if (!Array.isArray(value)) return [];
   return value.flatMap((entry) => {
     const record = asRecord(entry);
-    const type = record ? asString(record.type).toLowerCase() : "";
-    const phonetic = record ? asString(record.value) : "";
+    return record ? map(record) : [];
+  });
+}
+
+function parsePhonetics(
+  value: unknown,
+): Array<{ type: "us" | "uk"; value: string }> {
+  return parseEntries(value, (record) => {
+    const type = asString(record.type).toLowerCase();
+    const phonetic = asString(record.value);
     return type !== "us" && type !== "uk"
       ? []
       : phonetic
@@ -68,25 +85,51 @@ function parsePhonetics(
 }
 
 function parseParts(value: unknown): ParsedDict["toDict"]["parts"] {
-  if (!Array.isArray(value)) return [];
-  return value.flatMap((entry) => {
-    const record = asRecord(entry);
-    const part = record ? asString(record.part) : "";
-    const means = Array.isArray(record?.means)
+  return parseEntries(value, (record) => {
+    const part = asString(record.part);
+    const means = Array.isArray(record.means)
       ? record.means.map(asString).filter(Boolean)
       : [];
     return part && means.length ? [{ part, means }] : [];
   });
 }
 
+function parseExchanges(
+  value: unknown,
+): ParsedDict["toDict"]["exchanges"] | undefined {
+  const exchanges = parseEntries(value, (record) => {
+    const name = asString(record.name);
+    const words = Array.isArray(record.words)
+      ? record.words.map(asString).filter(Boolean)
+      : [];
+    return name && words.length ? [{ name, words }] : [];
+  });
+  return exchanges.length ? exchanges : undefined;
+}
+
+function parseRelatedWordParts(
+  value: unknown,
+): ParsedDict["toDict"]["relatedWordParts"] | undefined {
+  const related = parseEntries(value, (record) => {
+    const part = asString(record.part);
+    const words = parseEntries(record.words, (wordRecord) => {
+      const word = asString(wordRecord.word);
+      const means = Array.isArray(wordRecord.means)
+        ? wordRecord.means.map(asString).filter(Boolean)
+        : [];
+      return word ? [{ word, ...(means.length ? { means } : {}) }] : [];
+    });
+    return words.length ? [{ ...(part ? { part } : {}), words }] : [];
+  });
+  return related.length ? related : undefined;
+}
+
 function parseAdditions(
   value: unknown,
 ): ParsedDict["toDict"]["additions"] | undefined {
-  if (!Array.isArray(value)) return undefined;
-  const additions = value.flatMap((entry) => {
-    const record = asRecord(entry);
-    const name = record ? asString(record.name) : "";
-    const content = record ? asString(record.value) : "";
+  const additions = parseEntries(value, (record) => {
+    const name = asString(record.name);
+    const content = asString(record.value);
     return name && content ? [{ name, value: content }] : [];
   });
   return additions.length ? additions : undefined;
@@ -113,6 +156,8 @@ export function parseWordLookup(
     },
   }));
   const parts = parseParts(data.parts);
+  const exchanges = parseExchanges(data.exchanges);
+  const relatedWordParts = parseRelatedWordParts(data.relatedWordParts);
   const additions = parseAdditions(data.additions);
   if (!parts.length && !additions) {
     throw new DictParseError(raw);
@@ -123,6 +168,8 @@ export function parseWordLookup(
       word,
       phonetics,
       parts,
+      ...(exchanges && { exchanges }),
+      ...(relatedWordParts && { relatedWordParts }),
       ...(additions && { additions }),
     },
     thinkContent: think,

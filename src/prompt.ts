@@ -16,54 +16,78 @@ export function wordDetail(): WordDetail {
 function wordLookupPrompt(query: TextTranslateQuery): string {
   const word = query.text.trim();
   const target = `All explanatory text must be written in ${query.detectTo}.`;
-  const shape = (additions: boolean) =>
-    `{"word": "${word}", "phonetics": [{"type": "us", "value": "IPA"}, {"type": "uk", "value": "IPA"}], "parts": [{"part": "n.", "means": ["sense"]}]${additions ? ', "additions": [{"name": "...", "value": "..."}]' : ""}}`;
-
-  if (wordDetail() === "fast") {
-    return [
-      `Explain the English word "${word}" as a quick dictionary entry.`,
-      "Respond with a single valid JSON object and nothing else — no markdown fences, no commentary. Exact shape:",
-      shape(false),
-      "Rules:",
-      '- "phonetics": US and UK IPA transcriptions; "type" must be "us" or "uk".',
-      '- "parts": only the MAIN senses of each part of speech; short "means", no examples, no additions.',
-      target,
-      "Keep it minimal — this is a fast lookup.",
-    ].join("\n");
-  }
-
-  if (wordDetail() === "medium") {
-    return [
-      `Explain the English word "${word}" as a balanced dictionary entry.`,
-      "Respond with a single valid JSON object and nothing else — no markdown fences, no commentary. Exact shape:",
-      shape(true),
-      "Rules:",
-      '- "phonetics": US and UK IPA transcriptions; "type" must be "us" or "uk".',
-      '- "parts": every part of speech and its senses; "means" items may carry a short parenthetical note.',
-      '- "additions": concise entries covering etymology, usage (1-2 example sentences), and synonyms/antonyms (one-line distinctions). Values may be multi-line (\\n inside the JSON string).',
-      target,
-    ].join("\n");
-  }
-
-  return [
-    `Explain the English word "${word}" as a comprehensive dictionary article, at the depth of a quality learner's dictionary.`,
-    "Respond with a single valid JSON object and nothing else — no markdown fences, no commentary. Exact shape:",
-    `{"word": "${word}", "phonetics": [{"type": "us", "value": "IPA"}, {"type": "uk", "value": "IPA"}], "parts": [{"part": "n.", "means": ["sense (brief example or note)"]}], "additions": [{"name": "...", "value": "detailed multi-line text"}]}`,
-    "Rules:",
-    '- "phonetics": US and UK IPA transcriptions; "type" must be "us" or "uk".',
-    '- "parts": EVERY part of speech and EVERY sense; each "means" item may carry a short parenthetical example or register note.',
-    '- "additions": use as many entries as the word deserves (split a topic into several entries when useful). Cover, where applicable: etymology (origin, roots, how it evolved), usage (2-3 example sentences in different registers or contexts), synonyms and antonyms (with the distinction in meaning or register for each), related words and derivatives (and how they relate), cultural or historical background.',
-    '- Addition "value" strings must be DETAILED, multi-line text — separate lines with \\n inside the JSON string. Never compress a topic into a one-liner.',
-    target,
-    "Being thorough is expected: prefer more senses, more examples, longer values.",
-  ].join("\n");
+  return WORD_DETAIL[wordDetail()].prompt(word, target);
 }
 
-const WORD_DETAIL_SYSTEM: Record<WordDetail, string> = {
-  fast: "You are an English dictionary engine. Always respond with a single valid JSON object and nothing else — no markdown, no explanations. Be brief: main senses only.",
-  medium:
-    "You are an English dictionary engine. Always respond with a single valid JSON object and nothing else — no markdown, no explanations. Balanced detail: all senses with brief notes.",
-  full: "You are an English lexicographer. Always respond with a single valid JSON object and nothing else — no markdown, no explanations — and make every entry comprehensive: all senses, real examples, detailed background.",
+// "exchanges"/"relatedWordParts" words render clickable in Bob's dict UI —
+// clicking one re-queries it via the current service.
+const shape = (word: string, extras: string) =>
+  `{"word": "${word}", "phonetics": [{"type": "us", "value": "IPA"}, {"type": "uk", "value": "IPA"}], "parts": [{"part": "n.", "means": ["sense"]}], "exchanges": [{"name": "plural", "words": ["..."]}]${extras}}`;
+
+const related = `"relatedWordParts": [{"part": "n.", "words": [{"word": "synonym", "means": ["one-line distinction"]}]}]`;
+
+/** Single dispatch point per tier: system prompt + user prompt together. */
+const WORD_DETAIL: Record<
+  WordDetail,
+  { system: string; prompt: (word: string, target: string) => string }
+> = {
+  fast: {
+    system:
+      "You are an English dictionary engine. Always respond with a single valid JSON object and nothing else — no markdown, no explanations. Be brief: main senses only.",
+    prompt: (word, target) =>
+      [
+        `Explain the English word "${word}" as a quick dictionary entry.`,
+        "Respond with a single valid JSON object and nothing else — no markdown fences, no commentary. Exact shape:",
+        shape(word, ""),
+        "Rules:",
+        '- "phonetics": US and UK IPA transcriptions; "type" must be "us" or "uk".',
+        '- "parts": only the MAIN senses of each part of speech; short "means", no examples, no additions.',
+        '- "exchanges": only inflected forms that exist (plural, comparative, past tense...); omit the array if none.',
+        target,
+        "Keep it minimal — this is a fast lookup.",
+      ].join("\n"),
+  },
+  medium: {
+    system:
+      "You are an English dictionary engine. Always respond with a single valid JSON object and nothing else — no markdown, no explanations. Balanced detail: all senses with brief notes.",
+    prompt: (word, target) =>
+      [
+        `Explain the English word "${word}" as a balanced dictionary entry.`,
+        "Respond with a single valid JSON object and nothing else — no markdown fences, no commentary. Exact shape:",
+        shape(
+          word,
+          `, ${related}, "additions": [{"name": "...", "value": "..."}]`,
+        ),
+        "Rules:",
+        '- "phonetics": US and UK IPA transcriptions; "type" must be "us" or "uk".',
+        '- "parts": every part of speech and its senses; "means" items may carry a short parenthetical note.',
+        '- "exchanges": inflected and derived forms that exist (plural, comparative, past tense, derivatives); omit the array if none.',
+        '- "relatedWordParts": synonyms and antonyms grouped by part of speech, each with a one-line distinction in "means"; omit the array if none.',
+        '- "additions": concise entries covering etymology and usage (1-2 example sentences). Values may be multi-line (\\n inside the JSON string).',
+        target,
+      ].join("\n"),
+  },
+  full: {
+    system:
+      "You are an English lexicographer. Always respond with a single valid JSON object and nothing else — no markdown, no explanations — and make every entry comprehensive: all senses, real examples, detailed background.",
+    prompt: (word, target) =>
+      [
+        `Explain the English word "${word}" as a comprehensive dictionary article, at the depth of a quality learner's dictionary.`,
+        "Respond with a single valid JSON object and nothing else — no markdown fences, no commentary. Exact shape:",
+        shape(
+          word,
+          `, ${related}, "additions": [{"name": "...", "value": "detailed multi-line text"}]`,
+        ),
+        "Rules:",
+        '- "phonetics": US and UK IPA transcriptions; "type" must be "us" or "uk".',
+        '- "parts": EVERY part of speech and EVERY sense; each "means" item may carry a short parenthetical example or register note.',
+        '- "exchanges": EVERY inflected form and derivative (plural, tenses, comparative, -ly/-ness/-tion derivatives, compounds); omit the array if none.',
+        '- "relatedWordParts": synonyms and antonyms grouped by part of speech, each with its distinction in meaning or register in "means"; omit the array if none.',
+        '- "additions": use as many entries as the word deserves (split a topic into several entries when useful). Cover, where applicable: etymology (origin, roots, how it evolved), usage (2-3 example sentences in different registers or contexts), cultural or historical background.',
+        target,
+        "Being thorough is expected: prefer more senses, more examples, longer values.",
+      ].join("\n"),
+  },
 };
 
 const DEFAULT_TRANSLATE_PROMPT =
@@ -72,10 +96,10 @@ const DEFAULT_TRANSLATE_PROMPT =
 const SYSTEM_PROMPTS: Record<string, (isWord: boolean) => string> = {
   translate: (isWord) =>
     isWord
-      ? WORD_DETAIL_SYSTEM[wordDetail()]
+      ? WORD_DETAIL[wordDetail()].system
       : "You are a translation engine, translate directly without explanation and any explanatory content",
   interpret: () =>
-    "You are now a knowledgeable encyclopedia expert who can provide detailed information and explanations in various fields. Whether it's science, history, technology or culture, you can answer questions in a simple and easy-to-understand way and cite relevant materials and examples to help you understand.",
+    "You are now a knowledgeable encyclopedia expert who can provide detailed information and explanations in various fields. Whether it is science, history, technology or culture, you can answer questions in a simple and easy-to-understand way and cite relevant materials and examples to help you understand.",
 };
 
 /** Word lookup (glossary): translate pattern + single English token. */
