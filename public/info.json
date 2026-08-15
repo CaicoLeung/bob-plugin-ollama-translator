@@ -1,7 +1,7 @@
 {
   "identifier": "bob-plugin-ollama-translator",
   "category": "translate",
-  "version": "9.0.0",
+  "version": "9.1.0",
   "name": "AI单词/翻译/百科解释",
   "summary": "支持多种AI服务（Ollama/OpenAI/Grok/Claude/Gemini等）的翻译和解释插件，可进行单词翻译、文本翻译及百科解释",
   "author": "Caico",
@@ -9,6 +9,44 @@
   "appcast": "https://raw.githubusercontent.com/CaicoLeung/bob-plugin-ollama-translator/main/appcast.json",
   "minBobVersion": "1.15.0",
   "options": [
+    {
+      "identifier": "pattern",
+      "type": "menu",
+      "title": "模式",
+      "defaultValue": "translate",
+      "desc": "选择翻译模式或解释模式",
+      "menuValues": [
+        {
+          "title": "翻译模式",
+          "value": "translate"
+        },
+        {
+          "title": "解释模式",
+          "value": "interpret"
+        }
+      ]
+    },
+    {
+      "identifier": "wordDetail",
+      "type": "menu",
+      "title": "单词详解档位",
+      "defaultValue": "medium",
+      "desc": "单词查询的详细程度：快速（仅核心释义）/ 标准（释义+词源用法例句）/ 详尽（词典级全量），档位越高生成越慢",
+      "menuValues": [
+        {
+          "title": "快速",
+          "value": "fast"
+        },
+        {
+          "title": "标准",
+          "value": "medium"
+        },
+        {
+          "title": "详尽",
+          "value": "full"
+        }
+      ]
+    },
     {
       "identifier": "service",
       "type": "menu",
@@ -21,6 +59,10 @@
           "value": "ollama"
         },
         {
+          "title": "DeepSeek",
+          "value": "deepseek"
+        },
+        {
           "title": "OpenAI",
           "value": "openai"
         },
@@ -31,10 +73,6 @@
         {
           "title": "Claude",
           "value": "claude"
-        },
-        {
-          "title": "DeepSeek",
-          "value": "deepseek"
         },
         {
           "title": "Gemini",
@@ -142,6 +180,46 @@
       "textConfig": {
         "type": "visible",
         "placeholderText": "例如: qwen2.5:32b"
+      }
+    },
+    {
+      "identifier": "deepseekApiKey",
+      "type": "text",
+      "title": "DeepSeek API KEY",
+      "desc": "DeepSeek 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: sk-1234567890"
+      }
+    },
+    {
+      "identifier": "deepseekModel",
+      "type": "menu",
+      "title": "DeepSeek 模型",
+      "defaultValue": "deepseek-v4-flash",
+      "desc": "选择 DeepSeek 模型",
+      "menuValues": [
+        {
+          "title": "自定义",
+          "value": "custom"
+        },
+        {
+          "title": "deepseek-v4-pro",
+          "value": "deepseek-v4-pro"
+        },
+        {
+          "title": "deepseek-v4-flash",
+          "value": "deepseek-v4-flash"
+        }
+      ]
+    },
+    {
+      "identifier": "deepseekCustomModel",
+      "type": "text",
+      "title": "DeepSeek 自定义模型",
+      "desc": "仅当 DeepSeek 模型为自定义时生效",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如: deepseek-v4-flash"
       }
     },
     {
@@ -337,46 +415,6 @@
       }
     },
     {
-      "identifier": "deepseekApiKey",
-      "type": "text",
-      "title": "DeepSeek API KEY",
-      "desc": "DeepSeek 服务的 API KEY",
-      "textConfig": {
-        "placeholderText": "例如: sk-1234567890"
-      }
-    },
-    {
-      "identifier": "deepseekModel",
-      "type": "menu",
-      "title": "DeepSeek 模型",
-      "defaultValue": "deepseek-v4-flash",
-      "desc": "选择 DeepSeek 模型",
-      "menuValues": [
-        {
-          "title": "自定义",
-          "value": "custom"
-        },
-        {
-          "title": "deepseek-v4-pro",
-          "value": "deepseek-v4-pro"
-        },
-        {
-          "title": "deepseek-v4-flash",
-          "value": "deepseek-v4-flash"
-        }
-      ]
-    },
-    {
-      "identifier": "deepseekCustomModel",
-      "type": "text",
-      "title": "DeepSeek 自定义模型",
-      "desc": "仅当 DeepSeek 模型为自定义时生效",
-      "textConfig": {
-        "type": "visible",
-        "placeholderText": "例如: deepseek-v4-flash"
-      }
-    },
-    {
       "identifier": "geminiApiKey",
       "type": "text",
       "title": "Gemini API KEY",
@@ -541,38 +579,10 @@
       }
     },
     {
-      "identifier": "pattern",
-      "type": "menu",
-      "title": "模式",
-      "defaultValue": "translate",
-      "desc": "选择翻译模式或解释模式",
-      "menuValues": [
-        {
-          "title": "翻译模式",
-          "value": "translate"
-        },
-        {
-          "title": "解释模式",
-          "value": "interpret"
-        }
-      ]
-    },
-    {
       "identifier": "prompt",
       "type": "text",
       "title": "prompt",
       "desc": "自定义prompt模式，为空时使用默认prompt。源语言为{sourceLang}，目标语言为{targetLang}，原文为{sourceText}。",
-      "textConfig": {
-        "type": "visible",
-        "height": 100,
-        "placeholderText": "请输入prompt"
-      }
-    },
-    {
-      "identifier": "wordPrompt",
-      "type": "text",
-      "title": "单词模式 prompt",
-      "desc": "自定义单词解释模式，为空时使用默认prompt。源语言为{sourceLang}，目标语言为{targetLang}，原文为{sourceText}。",
       "textConfig": {
         "type": "visible",
         "height": 100,

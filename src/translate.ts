@@ -5,6 +5,7 @@ import { getCachedResult, setCachedResult } from "./cache";
 import { preCheck } from "./precheck";
 import { buildRequestParams } from "./params";
 import { createStreamParser } from "./parser";
+import { DictParseError, parseWordLookup } from "./dict";
 
 const FINISH_SUFFIXES: Record<string, string> = {
   length: "\n[翻译被截断：达到最大长度限制]",
@@ -13,15 +14,63 @@ const FINISH_SUFFIXES: Record<string, string> = {
   function_call: "\n[不支持的响应类型]",
 };
 
-function buildResult(query: TextTranslateQuery, text: string) {
+/** Shared result skeleton: language pair + paragraphs (Bob's base shape). */
+function resultShell(query: TextTranslateQuery, toParagraphs: string[]) {
+  return { from: query.detectFrom, to: query.detectTo, toParagraphs };
+}
+
+function buildWordResult(query: TextTranslateQuery, text: string) {
+  // Word lookup: dict result only (ADR-003). `toParagraphs: []` satisfies
+  // the type; Bob 1.6.0+ renders on `toDict` alone.
+  const { toDict, thinkContent } = parseWordLookup(text, query);
   return {
     result: {
-      thinkInfo: { content: "", splitThinkTag: true },
-      from: query.detectFrom,
-      to: query.detectTo,
-      toParagraphs: [text],
+      ...(thinkContent
+        ? { thinkInfo: { content: thinkContent, splitThinkTag: false } }
+        : {}),
+      ...resultShell(query, []),
+      toDict,
     },
   };
+}
+
+function buildTextResult(
+  query: TextTranslateQuery,
+  text: string,
+  thinkContent = "",
+) {
+  return {
+    result: {
+      thinkInfo: { content: thinkContent, splitThinkTag: true },
+      ...resultShell(query, [text]),
+    },
+  };
+}
+
+/** Word-lookup stream frame: reasoning only — the dict itself can't render
+ *  until the full JSON arrives (ADR-003 #4). */
+function buildWordStream(query: TextTranslateQuery, thinkContent: string) {
+  return {
+    result: {
+      thinkInfo: { content: thinkContent, splitThinkTag: false },
+      ...resultShell(query, []),
+    },
+  };
+}
+
+/** Reasoning models (DeepSeek R1, QwQ, ...) stream thinking in a dedicated
+ *  delta field, not inline <think> tags — capture it or the thinking
+ *  toggle never renders. */
+function reasoningDelta(delta: unknown): string {
+  const extended = delta as {
+    reasoning?: unknown;
+    reasoning_content?: unknown;
+  };
+  return typeof extended?.reasoning_content === "string"
+    ? extended.reasoning_content
+    : typeof extended?.reasoning === "string"
+      ? extended.reasoning
+      : "";
 }
 
 export async function translate(query: TextTranslateQuery) {
@@ -38,23 +87,38 @@ export async function translate(query: TextTranslateQuery) {
     return;
   }
 
-  const cached = getCachedResult(query);
+  const { params, wordLookup } = buildRequestParams(query, service);
+
+  const cached = getCachedResult(query, wordLookup);
   if (cached !== null) {
-    query.onCompletion(buildResult(query, cached));
+    completeOnce(query, cached, wordLookup);
     return;
   }
 
   if (!preCheck(query)) return;
 
-  const { params } = buildRequestParams(query, service);
   let accumulated = "";
+  let reasoning = "";
   let completed = false;
 
-  const complete = (text: string) => {
+  const complete = (rawText: string, finishReason?: string) => {
     if (completed) return;
     completed = true;
-    setCachedResult(query, text);
-    query.onCompletion(buildResult(query, text));
+    // Word lookup: a finish_reason note (e.g. truncation) would corrupt the
+    // JSON — the reason goes into the parse error's addition instead.
+    const text =
+      finishReason && !wordLookup
+        ? rawText + FINISH_SUFFIXES[finishReason]
+        : rawText;
+    // Reasoning deltas re-wrap as an inline <think> block so every consumer
+    // sees one format: dict.ts splits it into thinkInfo, Bob's
+    // splitThinkTag does the same for text results, and the cache replays it.
+    completeOnce(
+      query,
+      reasoning ? `<think>${reasoning}</think>${text}` : text,
+      wordLookup,
+      finishReason,
+    );
   };
 
   const parser = createStreamParser({
@@ -63,13 +127,25 @@ export async function translate(query: TextTranslateQuery) {
 
       const { finish_reason, delta } = chunk.choices[0];
       accumulated += delta?.content || "";
+      const deltaReasoning = reasoningDelta(delta);
+      reasoning += deltaReasoning;
 
       if (finish_reason === "stop") {
         complete(accumulated);
       } else if (finish_reason && FINISH_SUFFIXES[finish_reason]) {
-        complete(accumulated + FINISH_SUFFIXES[finish_reason]);
+        complete(accumulated, finish_reason);
       } else if (!finish_reason) {
-        query.onStream(buildResult(query, accumulated));
+        // The dict can't stream (partial JSON is unrenderable), but the
+        // reasoning toggle updates live on both paths.
+        if (wordLookup) {
+          // Only frames that add reasoning — content chunks would re-send
+          // an identical think frame for the rest of the generation.
+          if (deltaReasoning) {
+            query.onStream(buildWordStream(query, reasoning));
+          }
+        } else {
+          query.onStream(buildTextResult(query, accumulated, reasoning));
+        }
       }
     },
     onError: (error) => {
@@ -114,9 +190,52 @@ export async function translate(query: TextTranslateQuery) {
         }
         parser.reset();
         accumulated = "";
+        reasoning = "";
       },
     });
   } catch (error: unknown) {
+    handleGeneralError(query, {
+      type: "api",
+      message: error instanceof Error ? error.message : "Unknown error",
+      addition: "翻译过程中发生错误",
+    } as ServiceError);
+  }
+}
+
+/**
+ * Deliver the final payload: parse dict output for word lookups, cache only
+ * successful results, and surface parse failures as errors carrying the raw
+ * model output (ADR-003).
+ */
+function completeOnce(
+  query: TextTranslateQuery,
+  text: string,
+  wordLookup: boolean,
+  finishReason?: string,
+) {
+  try {
+    const payload = wordLookup
+      ? buildWordResult(query, text)
+      : buildTextResult(query, text);
+    setCachedResult(query, text, wordLookup);
+    query.onCompletion(payload);
+  } catch (error) {
+    if (error instanceof DictParseError) {
+      const detail = [
+        finishReason && `finish_reason: ${finishReason}`,
+        `模型原始输出（结尾 300 字符）: …${error.raw.slice(-300)}`,
+      ]
+        .filter(Boolean)
+        .join("\n");
+      handleGeneralError(query, {
+        type: "api",
+        message: "词典结果解析失败 - 模型未返回有效的 JSON 词典数据",
+        addition: detail,
+      } as ServiceError);
+      return;
+    }
+    // Never rethrow across the Bob boundary: an unexpected failure still
+    // completes the query with an error instead of escaping to Bob.
     handleGeneralError(query, {
       type: "api",
       message: error instanceof Error ? error.message : "Unknown error",

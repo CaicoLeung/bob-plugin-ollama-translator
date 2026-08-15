@@ -39,3 +39,7 @@ Version family of a provider's models (e.g., GPT-5, Claude Sonnet 5, Gemini 3). 
 ### Refresh
 
 The act of updating the `menuValues` list with new model IDs from each provider. See [ADR-001](decisions/ADR-001-model-menu-refresh-policy.md).
+
+### Word lookup
+
+The treatment of a query whose text is a single English word (auto-detected, not user-selected). Instead of translation, the service explains the word — pronunciation, meanings grouped by part of speech, etymology, usage, and related background — rendered as a dictionary result rather than translated paragraphs.
