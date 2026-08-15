@@ -13,7 +13,11 @@ export class DictParseError extends Error {
 export interface ParsedDict {
   toDict: {
     word: string;
-    phonetics: Array<{ type: "us" | "uk"; value: string }>;
+    phonetics: Array<{
+      type: "us" | "uk";
+      value: string;
+      tts: { type: "url"; value: string };
+    }>;
     parts: Array<{ part: string; means: string[] }>;
     additions?: Array<{ name: string; value: string }>;
   };
@@ -47,11 +51,13 @@ function asRecord(value: unknown): Record<string, unknown> | null {
     : null;
 }
 
-function parsePhonetics(value: unknown): ParsedDict["toDict"]["phonetics"] {
+function parsePhonetics(
+  value: unknown,
+): Array<{ type: "us" | "uk"; value: string }> {
   if (!Array.isArray(value)) return [];
   return value.flatMap((entry) => {
     const record = asRecord(entry);
-    const type = record ? asString(record.type) : "";
+    const type = record ? asString(record.type).toLowerCase() : "";
     const phonetic = record ? asString(record.value) : "";
     return type !== "us" && type !== "uk"
       ? []
@@ -98,8 +104,14 @@ export function parseWordLookup(
   }
   const data = asRecord(parsed);
   if (!data) throw new DictParseError(raw);
-
-  const phonetics = parsePhonetics(data.phonetics);
+  const word = asString(data.word) || query.text.trim();
+  const phonetics = parsePhonetics(data.phonetics).map((phonetic) => ({
+    ...phonetic,
+    tts: {
+      type: "url" as const,
+      value: `https://dict.youdao.com/dictvoice?type=${phonetic.type === "us" ? 0 : 1}&audio=${encodeURIComponent(word)}`,
+    },
+  }));
   const parts = parseParts(data.parts);
   const additions = parseAdditions(data.additions);
   if (!parts.length && !additions) {
@@ -108,7 +120,7 @@ export function parseWordLookup(
 
   return {
     toDict: {
-      word: asString(data.word) || query.text.trim(),
+      word,
       phonetics,
       parts,
       ...(additions && { additions }),
