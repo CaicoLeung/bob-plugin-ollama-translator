@@ -16,10 +16,10 @@ export type Provider =
 
 export const PROVIDERS: readonly Provider[] = [
   "ollama",
+  "deepseek",
   "openai",
   "grok",
   "claude",
-  "deepseek",
   "gemini",
   "zhipu",
   "other",

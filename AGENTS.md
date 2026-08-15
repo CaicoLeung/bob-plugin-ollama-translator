@@ -5,7 +5,7 @@ Bob (macOS translation app) plugin exposing AI translation/interpretation over a
 ## Project Overview
 
 - Single-purpose Bob plugin (identifier `bob-plugin-ollama-translator`): word/text translation (`translate` pattern) and encyclopedia-style explanation (`interpret` pattern), streamed via SSE.
-- Supports 8 providers — `ollama`, `openai`, `grok`, `claude`, `deepseek`, `gemini`, `zhipu`, `other` — all through the OpenAI chat-completions shape (Claude included, via `api.anthropic.com/v1/...`).
+- Supports 8 providers — `ollama`, `deepseek`, `openai`, `grok`, `claude`, `gemini`, `zhipu`, `other` — all through the OpenAI chat-completions shape (Claude included, via `api.anthropic.com/v1/...`).
 - Plugin version lives in `public/info.json` (manifest, currently ahead of `package.json` — release only bumps `info.json`).
 
 ## Architecture & Data Flow

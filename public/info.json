@@ -10,6 +10,44 @@
   "minBobVersion": "1.15.0",
   "options": [
     {
+      "identifier": "pattern",
+      "type": "menu",
+      "title": "模式",
+      "defaultValue": "translate",
+      "desc": "选择翻译模式或解释模式",
+      "menuValues": [
+        {
+          "title": "翻译模式",
+          "value": "translate"
+        },
+        {
+          "title": "解释模式",
+          "value": "interpret"
+        }
+      ]
+    },
+    {
+      "identifier": "wordDetail",
+      "type": "menu",
+      "title": "单词详解档位",
+      "defaultValue": "medium",
+      "desc": "单词查询的详细程度：快速（仅核心释义）/ 标准（释义+词源用法例句）/ 详尽（词典级全量），档位越高生成越慢",
+      "menuValues": [
+        {
+          "title": "快速",
+          "value": "fast"
+        },
+        {
+          "title": "标准",
+          "value": "medium"
+        },
+        {
+          "title": "详尽",
+          "value": "full"
+        }
+      ]
+    },
+    {
       "identifier": "service",
       "type": "menu",
       "title": "服务",
@@ -19,6 +57,10 @@
         {
           "title": "Ollama",
           "value": "ollama"
+        },
+        {
+          "title": "DeepSeek",
+          "value": "deepseek"
         },
         {
           "title": "OpenAI",
@@ -31,10 +73,6 @@
         {
           "title": "Claude",
           "value": "claude"
-        },
-        {
-          "title": "DeepSeek",
-          "value": "deepseek"
         },
         {
           "title": "Gemini",
@@ -142,6 +180,46 @@
       "textConfig": {
         "type": "visible",
         "placeholderText": "例如: qwen2.5:32b"
+      }
+    },
+    {
+      "identifier": "deepseekApiKey",
+      "type": "text",
+      "title": "DeepSeek API KEY",
+      "desc": "DeepSeek 服务的 API KEY",
+      "textConfig": {
+        "placeholderText": "例如: sk-1234567890"
+      }
+    },
+    {
+      "identifier": "deepseekModel",
+      "type": "menu",
+      "title": "DeepSeek 模型",
+      "defaultValue": "deepseek-v4-flash",
+      "desc": "选择 DeepSeek 模型",
+      "menuValues": [
+        {
+          "title": "自定义",
+          "value": "custom"
+        },
+        {
+          "title": "deepseek-v4-pro",
+          "value": "deepseek-v4-pro"
+        },
+        {
+          "title": "deepseek-v4-flash",
+          "value": "deepseek-v4-flash"
+        }
+      ]
+    },
+    {
+      "identifier": "deepseekCustomModel",
+      "type": "text",
+      "title": "DeepSeek 自定义模型",
+      "desc": "仅当 DeepSeek 模型为自定义时生效",
+      "textConfig": {
+        "type": "visible",
+        "placeholderText": "例如: deepseek-v4-flash"
       }
     },
     {
@@ -337,46 +415,6 @@
       }
     },
     {
-      "identifier": "deepseekApiKey",
-      "type": "text",
-      "title": "DeepSeek API KEY",
-      "desc": "DeepSeek 服务的 API KEY",
-      "textConfig": {
-        "placeholderText": "例如: sk-1234567890"
-      }
-    },
-    {
-      "identifier": "deepseekModel",
-      "type": "menu",
-      "title": "DeepSeek 模型",
-      "defaultValue": "deepseek-v4-flash",
-      "desc": "选择 DeepSeek 模型",
-      "menuValues": [
-        {
-          "title": "自定义",
-          "value": "custom"
-        },
-        {
-          "title": "deepseek-v4-pro",
-          "value": "deepseek-v4-pro"
-        },
-        {
-          "title": "deepseek-v4-flash",
-          "value": "deepseek-v4-flash"
-        }
-      ]
-    },
-    {
-      "identifier": "deepseekCustomModel",
-      "type": "text",
-      "title": "DeepSeek 自定义模型",
-      "desc": "仅当 DeepSeek 模型为自定义时生效",
-      "textConfig": {
-        "type": "visible",
-        "placeholderText": "例如: deepseek-v4-flash"
-      }
-    },
-    {
       "identifier": "geminiApiKey",
       "type": "text",
       "title": "Gemini API KEY",
@@ -539,44 +577,6 @@
         "type": "visible",
         "placeholderText": "例如: gpt-4o-mini"
       }
-    },
-    {
-      "identifier": "pattern",
-      "type": "menu",
-      "title": "模式",
-      "defaultValue": "translate",
-      "desc": "选择翻译模式或解释模式",
-      "menuValues": [
-        {
-          "title": "翻译模式",
-          "value": "translate"
-        },
-        {
-          "title": "解释模式",
-          "value": "interpret"
-        }
-      ]
-    },
-    {
-      "identifier": "wordDetail",
-      "type": "menu",
-      "title": "单词详解档位",
-      "defaultValue": "medium",
-      "desc": "单词查询的详细程度：快速（仅核心释义）/ 标准（释义+词源用法例句）/ 详尽（词典级全量），档位越高生成越慢",
-      "menuValues": [
-        {
-          "title": "快速",
-          "value": "fast"
-        },
-        {
-          "title": "标准",
-          "value": "medium"
-        },
-        {
-          "title": "详尽",
-          "value": "full"
-        }
-      ]
     },
     {
       "identifier": "prompt",
