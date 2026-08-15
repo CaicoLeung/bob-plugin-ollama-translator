@@ -4,7 +4,7 @@
     {
       "version": "9.1.0",
       "desc": "v9.1.0: 单词查询改为词典结构（toDict）— 发音（US/UK IPA + 可点击发音按钮，语音来自有道词典接口）、按词性分组释义、词源/用法例句/同反义词辨析/相关词汇/文化背景作为附加内容；解释语言跟随目标语言；推理内容经 thinkInfo 展示。新增「单词详解档位」配置：快速（仅核心释义）/标准（默认）/详尽（词典级全量），档位越高生成越慢。注意（有意为之的破坏性变更打包为 minor 版本）：移除「单词模式 prompt」自定义选项 — 输出为固定 JSON 结构，自定义模板不再适用，已保存的配置将被忽略；模型输出无法解析为词典时将明确报错（附模型原始输出）而非退回纯文本；qwen-mt 模型不参与单词查询。详见 docs/decisions/ADR-003-word-lookup-dict-output.md",
-      "sha256": "ccbd641661eb48bf5f0cf844bb98cfeb1161b1cd8bc093cae4e18d53b44ecc2f",
+      "sha256": "8244fe41c009e67eb9d73c3e9aac37a28e1beac74b54e687217e91e0aa3fdc46",
       "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v9.1.0/bob-plugin-ollama-translator-v9.1.0.bobplugin",
       "minBobVersion": "1.8.0"
     },
