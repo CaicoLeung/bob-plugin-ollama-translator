@@ -14,6 +14,11 @@ const FINISH_SUFFIXES: Record<string, string> = {
   function_call: "\n[不支持的响应类型]",
 };
 
+/** Shared result skeleton: language pair + paragraphs (Bob's base shape). */
+function resultShell(query: TextTranslateQuery, toParagraphs: string[]) {
+  return { from: query.detectFrom, to: query.detectTo, toParagraphs };
+}
+
 function buildWordResult(query: TextTranslateQuery, text: string) {
   // Word lookup: dict result only (ADR-003). `toParagraphs: []` satisfies
   // the type; Bob 1.6.0+ renders on `toDict` alone.
@@ -23,9 +28,7 @@ function buildWordResult(query: TextTranslateQuery, text: string) {
       ...(thinkContent
         ? { thinkInfo: { content: thinkContent, splitThinkTag: false } }
         : {}),
-      from: query.detectFrom,
-      to: query.detectTo,
-      toParagraphs: [],
+      ...resultShell(query, []),
       toDict,
     },
   };
@@ -39,9 +42,7 @@ function buildTextResult(
   return {
     result: {
       thinkInfo: { content: thinkContent, splitThinkTag: true },
-      from: query.detectFrom,
-      to: query.detectTo,
-      toParagraphs: [text],
+      ...resultShell(query, [text]),
     },
   };
 }
@@ -52,11 +53,24 @@ function buildWordStream(query: TextTranslateQuery, thinkContent: string) {
   return {
     result: {
       thinkInfo: { content: thinkContent, splitThinkTag: false },
-      from: query.detectFrom,
-      to: query.detectTo,
-      toParagraphs: [],
+      ...resultShell(query, []),
     },
   };
+}
+
+/** Reasoning models (DeepSeek R1, QwQ, ...) stream thinking in a dedicated
+ *  delta field, not inline <think> tags — capture it or the thinking
+ *  toggle never renders. */
+function reasoningDelta(delta: unknown): string {
+  const extended = delta as {
+    reasoning?: unknown;
+    reasoning_content?: unknown;
+  };
+  return typeof extended?.reasoning_content === "string"
+    ? extended.reasoning_content
+    : typeof extended?.reasoning === "string"
+      ? extended.reasoning
+      : "";
 }
 
 export async function translate(query: TextTranslateQuery) {
@@ -75,7 +89,7 @@ export async function translate(query: TextTranslateQuery) {
 
   const { params, wordLookup } = buildRequestParams(query, service);
 
-  const cached = getCachedResult(query);
+  const cached = getCachedResult(query, wordLookup);
   if (cached !== null) {
     completeOnce(query, cached, wordLookup);
     return;
@@ -87,11 +101,15 @@ export async function translate(query: TextTranslateQuery) {
   let reasoning = "";
   let completed = false;
 
-  // Word lookup: finish_reason note (e.g. truncation) goes into the parse
-  // error's addition — appending suffix text would corrupt the JSON.
-  const complete = (text: string, finishReason?: string) => {
+  const complete = (rawText: string, finishReason?: string) => {
     if (completed) return;
     completed = true;
+    // Word lookup: a finish_reason note (e.g. truncation) would corrupt the
+    // JSON — the reason goes into the parse error's addition instead.
+    const text =
+      finishReason && !wordLookup
+        ? rawText + FINISH_SUFFIXES[finishReason]
+        : rawText;
     // Reasoning deltas re-wrap as an inline <think> block so every consumer
     // sees one format: dict.ts splits it into thinkInfo, Bob's
     // splitThinkTag does the same for text results, and the cache replays it.
@@ -109,29 +127,13 @@ export async function translate(query: TextTranslateQuery) {
 
       const { finish_reason, delta } = chunk.choices[0];
       accumulated += delta?.content || "";
-      // Reasoning models (DeepSeek R1, QwQ, ...) stream reasoning in a
-      // dedicated delta field, not inline <think> tags — capture it or the
-      // thinking toggle never renders.
-      const thinking = delta as {
-        reasoning?: unknown;
-        reasoning_content?: unknown;
-      };
-      const deltaReasoning =
-        typeof thinking?.reasoning_content === "string"
-          ? thinking.reasoning_content
-          : typeof thinking?.reasoning === "string"
-            ? thinking.reasoning
-            : "";
+      const deltaReasoning = reasoningDelta(delta);
       reasoning += deltaReasoning;
 
       if (finish_reason === "stop") {
         complete(accumulated);
       } else if (finish_reason && FINISH_SUFFIXES[finish_reason]) {
-        if (wordLookup) {
-          complete(accumulated, finish_reason);
-        } else {
-          complete(accumulated + FINISH_SUFFIXES[finish_reason]);
-        }
+        complete(accumulated, finish_reason);
       } else if (!finish_reason) {
         // The dict can't stream (partial JSON is unrenderable), but the
         // reasoning toggle updates live on both paths.
@@ -215,7 +217,7 @@ function completeOnce(
     const payload = wordLookup
       ? buildWordResult(query, text)
       : buildTextResult(query, text);
-    setCachedResult(query, text);
+    setCachedResult(query, text, wordLookup);
     query.onCompletion(payload);
   } catch (error) {
     if (error instanceof DictParseError) {
