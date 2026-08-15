@@ -22,7 +22,7 @@ A param-only design therefore cannot deliver JSON on Claude, and small local mod
 
 1. Word lookup returns `toDict` only (`toParagraphs: []`): `word` + `phonetics` (us + uk IPA) + `parts` (POS → senses) + `exchanges` (inflected/derived forms) + `relatedWordParts` (synonyms/antonyms with one-line distinctions) + `additions` (etymology, usage, cultural background). Dict content language follows `query.detectTo`.
 2. JSON enforcement is belt-and-suspenders: always send `response_format: json_object` for word lookups AND a fixed prompt that demands strict JSON with the schema spelled out. The prompt-side instruction is mandatory for OpenAI/DeepSeek and is the only lever on Claude.
-3. Parse failure is a hard error, not a silent fallback: message "词典结果解析失败", with `finish_reason` (truncation etc.) and the last 300 chars of raw model output in `addition`. Failed outputs are never cached.
+3. Parse failure is a hard error, not a silent fallback: message "词典结果解析失败", with `finish_reason` (truncation etc.) and the last 300 chars of raw model output in `addition`. Failed outputs are never cached. One packaging form is tolerated: if the body fails to parse, a single outer markdown code fence is stripped and the parse retried (raw body is attempted first) — fenced-but-valid JSON on prompt-only providers is a formatting slip, not a model-quality failure; anything else stays an error.
 4. Streaming is suppressed for the dict itself during word-lookup accumulation (partial JSON is unrenderable); the dict is delivered once at completion. Reasoning deltas (`reasoning_content`/`reasoning`) are the exception — they stream live into `thinkInfo` via `onStream` frames (dict-empty, reasoning-only), matching the text path, and re-wrap as a `<think>` block at completion so `dict.ts`, Bob's `splitThinkTag` and the cache all see one format.
 5. The `wordPrompt` option is removed from `info.json` (v9.1.0): the JSON schema is fixed, so a user template has nothing to override. Version bumped to 9.1.0 as a deliberate minor-with-breaking change per maintainer call.
 6. qwen-mt models skip word lookup entirely (translation-only, prompts bypassed).
@@ -35,6 +35,7 @@ A param-only design therefore cannot deliver JSON on Claude, and small local mod
 - Word lookups render in Bob's native dictionary UI across all providers.
 - Small local models that emit invalid JSON now produce an explicit error where they previously showed whatever prose they emitted. Users on such models see failures instead of degraded output — accepted trade-off for honest signaling.
 - Custom `wordPrompt` users lose their override; stored values are ignored silently by Bob after the option is removed.
+- Pronunciation playback sends the queried word to Youdao's `dictvoice` endpoint on speaker-button click — including for users who run local-only services (Ollama) for privacy. Availability risk is recorded in decision 7; the privacy trade-off is accepted for now, with an on/off option as the escape hatch if it becomes a concern.
 - Claude/Gemini/`other` depend on prompt-side enforcement only; parse failure rates there are expected to match plain prompting.
 
 ## Alternatives considered

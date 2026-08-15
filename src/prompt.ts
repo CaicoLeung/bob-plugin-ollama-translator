@@ -1,17 +1,10 @@
 import { TextTranslateQuery } from "@bob-translate/types";
+import { wordDetail, type WordDetail } from "./service";
 
 // Fixed (non-user-overridable): word lookup must return Bob's toDict JSON.
 // Built via concatenation, not `renderTemplate` — the literal JSON braces
 // would collide with its `{key}` placeholders. Depth follows the
-// `wordDetail` option: fast | medium (default) | full.
-type WordDetail = "fast" | "medium" | "full";
-
-/** Tier shared by prompts and the result cache; unknown values → medium. */
-export function wordDetail(): WordDetail {
-  return $option.wordDetail === "fast" || $option.wordDetail === "full"
-    ? $option.wordDetail
-    : "medium";
-}
+// `wordDetail` option (read in `service.ts`): fast | medium | full.
 
 function wordLookupPrompt(query: TextTranslateQuery): string {
   const word = query.text.trim();

@@ -134,6 +134,24 @@ function parseAdditions(
   });
   return additions.length ? additions : undefined;
 }
+
+/**
+ * Models on prompt-only providers (Claude, `other`) sometimes wrap valid
+ * JSON in a markdown fence despite instructions. Try the body as-is
+ * first; only on failure retry with the one outer fence stripped —
+ * packaging is tolerated, anything else stays a hard parse error
+ * (ADR-003 #3). Raw JSON never contains real newlines inside strings, so
+ * the lazy content match cannot cut a value short.
+ */
+function parseJsonBody(body: string): unknown {
+  try {
+    return JSON.parse(body);
+  } catch (error) {
+    const fenced = /^```[^\n]*\n([\s\S]*?)\n```$/.exec(body);
+    if (!fenced) throw error;
+    return JSON.parse(fenced[1].trim());
+  }
+}
 export function parseWordLookup(
   raw: string,
   query: TextTranslateQuery,
@@ -141,7 +159,7 @@ export function parseWordLookup(
   const { body, think } = splitThinkTags(raw);
   let parsed: unknown;
   try {
-    parsed = JSON.parse(body);
+    parsed = parseJsonBody(body);
   } catch {
     throw new DictParseError(raw);
   }

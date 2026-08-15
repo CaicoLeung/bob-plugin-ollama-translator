@@ -86,3 +86,13 @@ export function getModel(service: Provider): string {
   const selected = $option[model];
   return selected === "custom" ? $option[customModel] || "" : selected || "";
 }
+
+/** Word-lookup detail tier (`wordDetail` menu): fast | medium | full.
+ *  Shared by prompt construction and the result cache; unknown → medium. */
+export type WordDetail = "fast" | "medium" | "full";
+
+export function wordDetail(): WordDetail {
+  return $option.wordDetail === "fast" || $option.wordDetail === "full"
+    ? $option.wordDetail
+    : "medium";
+}

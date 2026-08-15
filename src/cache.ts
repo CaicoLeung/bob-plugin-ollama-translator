@@ -1,5 +1,5 @@
 import { TextTranslateQuery } from "@bob-translate/types";
-import { wordDetail } from "./prompt";
+import { wordDetail } from "./service";
 
 const MAX_RECORDS = 100;
 const records = new Map<string, string>();
