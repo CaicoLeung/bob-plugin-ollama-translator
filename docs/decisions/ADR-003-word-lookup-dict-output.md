@@ -28,6 +28,7 @@ A param-only design therefore cannot deliver JSON on Claude, and small local mod
 6. The `wordPrompt` option is removed from `info.json` (v9.1.0): the JSON schema is fixed, so a user template has nothing to override. Version bumped to 9.1.0 as a deliberate minor-with-breaking change per maintainer call.
 7. qwen-mt models skip word lookup entirely (translation-only, prompts bypassed).
 8. Each phonetic entry carries `tts: {type: "url"}` pointing at Youdao's `dictvoice` endpoint (`type=0` US, `type=1` UK) — Bob only renders the speaker button when `tts` is present. The model cannot synthesize audio, so playback depends on this third-party endpoint; if it dies, only the button's playback breaks, the IPA text stays. Phonetic `type` matching is case-insensitive ("US"/"UK" from the model normalized).
+9. Detail depth is user-selectable via the `wordDetail` menu — `fast` (core senses only, no additions) / `medium` (default: all senses + etymology/usage/synonyms) / `full` (learner's-dictionary depth) — each tier is a distinct JSON prompt, and the tier is part of the result cache key so switching tiers never serves the other tier's cached entry.
 
 ## Consequences
 
