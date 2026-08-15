@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "9.1.0",
+      "desc": "v9.1.0: 单词查询改为词典结构（toDict）— 发音（US/UK IPA）、按词性分组释义、词源/用法/同反义词/相关词汇/文化背景作为附加内容；解释语言跟随目标语言；推理内容经 thinkInfo 展示。注意（有意为之的破坏性变更打包为 minor 版本）：移除「单词模式 prompt」自定义选项 — 输出为固定 JSON 结构，自定义模板不再适用，已保存的配置将被忽略；模型输出无法解析为词典时将明确报错（附模型原始输出）而非退回纯文本；qwen-mt 模型不参与单词查询。详见 docs/decisions/ADR-003-word-lookup-dict-output.md",
+      "sha256": "2b9b9ab3e5bcdcbd96c084da2f08774e076a702c7db38b5da39589fa46217b61",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v9.1.0/bob-plugin-ollama-translator-v9.1.0.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "9.0.0",
       "desc": "v9.0.0: 破坏性更新 — 模型配置改为按服务分别设置。旧版本单一「模型」下拉框已移除，更新后请在对应服务（OpenAI/Claude 等）的模型下拉框中重新选择模型，旧配置不会自动迁移。同时刷新各服务模型列表并移除已退役/无效的模型 ID。",
       "sha256": "d612f4c27847310a741f001f619bc5803b660b9e55516aac418845fa69769484",
