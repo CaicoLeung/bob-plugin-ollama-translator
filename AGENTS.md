@@ -66,24 +66,24 @@ No lint/format/typecheck entries exist in `package.json` scripts — CI runs the
 - TypeScript strict (`noUnusedLocals`, `noUnusedParameters`, `isolatedModules`), ES2020, emitted CJS for Bob's runtime. Emission happens via `@rollup/plugin-typescript` — `tsc` is typecheck-only.
 - Prettier defaults (2-space, no config file); `.editorconfig` sets `insert_final_newline = false`.
 - Option/config reads go through `$option` with per-provider field names (`openaiModel`, `openaiCustomModel`, `openaiApiKey`, …); the `"custom"` menu sentinel switches to the `*CustomModel` text field (`src/service.ts` `getModel`).
-- Prompt templates: `renderTemplate` regex-replaces `{key}`; user-overridable via `$option.prompt` / `$option.wordPrompt`; word mode = single English token detection (`src/prompt.ts`).
+- Prompt templates: `renderTemplate` regex-replaces `{key}`; the non-word translate prompt is user-overridable via `$option.prompt`. Word lookup (glossary; single English token, auto-detected) uses a fixed JSON-demanding prompt built by concatenation (`src/prompt.ts`) — literal JSON braces can't go through `renderTemplate`.
 - Domain vocabulary is fixed in `docs/glossary.md` (Provider, Model, Menu value, Refresh, …) — use it in issues/commits/refactors; don't drift to synonyms.
 - **ADR-001: model menu refresh is additive-only** — never remove/rewrite existing `menuValues` in `public/info.json`; append only. Removing entries breaks stored user selections (Bob persists by string). `defaultValue` changes need a separate decision.
 
 ## Important Files
 
-| File | Role |
-|---|---|
-| `src/main.ts` | Entry; re-exports `translate` + `supportLanguages` |
-| `src/translate.ts` | Orchestrator: streaming, completion, error reporting |
-| `src/service.ts` | Provider registry + `$option` readers |
-| `src/params.ts` / `src/prompt.ts` | Request body + prompt construction |
-| `src/parser.ts` | SSE parsing (`eventsource-parser`; `openai` pkg is type-only) |
-| `src/types.d.ts` | Ambient `$option` declaration — update when adding options |
-| `public/info.json` | Bob manifest, plugin version, settings UI |
-| `appcast.json` | Update feed — **never hand-edit**; maintained by `scripts/update_appcast.py` at release |
-| `CLAUDE.md` | Companion agent guide (commands, provider checklist) |
-| `docs/decisions/` | ADRs — read before touching model menus or release flow |
+| File                              | Role                                                                                    |
+| --------------------------------- | --------------------------------------------------------------------------------------- |
+| `src/main.ts`                     | Entry; re-exports `translate` + `supportLanguages`                                      |
+| `src/translate.ts`                | Orchestrator: streaming, completion, error reporting                                    |
+| `src/service.ts`                  | Provider registry + `$option` readers                                                   |
+| `src/params.ts` / `src/prompt.ts` | Request body + prompt construction                                                      |
+| `src/parser.ts`                   | SSE parsing (`eventsource-parser`; `openai` pkg is type-only)                           |
+| `src/types.d.ts`                  | Ambient `$option` declaration — update when adding options                              |
+| `public/info.json`                | Bob manifest, plugin version, settings UI                                               |
+| `appcast.json`                    | Update feed — **never hand-edit**; maintained by `scripts/update_appcast.py` at release |
+| `CLAUDE.md`                       | Companion agent guide (commands, provider checklist)                                    |
+| `docs/decisions/`                 | ADRs — read before touching model menus or release flow                                 |
 
 ## Runtime/Tooling Preferences
 
