@@ -38,14 +38,14 @@ Key patterns an assistant must preserve:
 
 ## Key Directories
 
-| Path | Purpose |
-|---|---|
-| `src/` | All plugin TypeScript (typechecked; bundled by Rollup) |
-| `scripts/` | `build.ts` (zx build driver), `update_appcast.py` (release feed updater; not typechecked) |
-| `public/` | `info.json` (Bob manifest + settings-UI options), `icon.png` — copied into `dist/` at build |
-| `docs/` | `glossary.md` (ubiquitous language), `decisions/` (ADRs), `agents/` (issue/triage/domain conventions) |
-| `.github/workflows/` | `ci.yml` (checks), `release.yml` (manual dispatch: bump, build, appcast, tag, upload) |
-| `dist/` | Build output; `.bobplugin` zip is the installable artifact |
+| Path                 | Purpose                                                                                               |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| `src/`               | All plugin TypeScript (typechecked; bundled by Rollup)                                                |
+| `scripts/`           | `build.ts` (zx build driver), `update_appcast.py` (release feed updater; not typechecked)             |
+| `public/`            | `info.json` (Bob manifest + settings-UI options), `icon.png` — copied into `dist/` at build           |
+| `docs/`              | `glossary.md` (ubiquitous language), `decisions/` (ADRs), `agents/` (issue/triage/domain conventions) |
+| `.github/workflows/` | `ci.yml` (checks), `release.yml` (manual dispatch: bump, build, appcast, tag, upload)                 |
+| `dist/`              | Build output; `.bobplugin` zip is the installable artifact                                            |
 
 ## Development Commands
 
