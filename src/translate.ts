@@ -12,6 +12,7 @@ import { buildRequestParams } from "./params";
 import { createStreamParser } from "./parser";
 import { DictParseError } from "./dict";
 import { createResultFramer, isFinishWithSuffix } from "./result";
+import { wordDetail } from "./wordlookup";
 
 /** Delivery: render the composed text through the result framer, cache only
  *  successful results, and surface parse failures as errors carrying the raw
@@ -20,12 +21,12 @@ function completeOnce(
   query: TextTranslateQuery,
   framer: ReturnType<typeof createResultFramer>,
   composed: string,
-  wordLookup: boolean,
+  tier?: string,
   finishReason?: string,
 ) {
   try {
     const payload = framer.payload(composed);
-    setCachedResult(query, composed, wordLookup);
+    setCachedResult(query, composed, tier);
     query.onCompletion(payload);
   } catch (error) {
     if (error instanceof DictParseError) {
@@ -54,31 +55,26 @@ function completeOnce(
 
 export async function translate(query: TextTranslateQuery) {
   const service = asProvider($option.service);
+
+  // All config validation, one seam — before the cache, so the cache never
+  // masks a broken config (see AGENTS.md).
+  if (!preCheck(query, service)) return;
+
   const url = getServiceUrl(service);
   const apiKey = getApiKey(service);
-
-  if (!url) {
-    handleGeneralError(query, {
-      type: "param",
-      message: "配置错误 - 请确保您在插件配置中填入了正确的 Base URL",
-      addition: "请在插件配置中填写 Base URL",
-    });
-    return;
-  }
-
   const { params, wordLookup } = buildRequestParams(query, service);
   const framer = createResultFramer(query, {
     thinking: thinkingEnabled(),
     wordLookup,
   });
+  // ADR-003 #8: only word-lookup entries are keyed by detail tier.
+  const tier = wordLookup ? wordDetail() : undefined;
 
-  const cached = getCachedResult(query, wordLookup);
+  const cached = getCachedResult(query, tier);
   if (cached !== null) {
-    completeOnce(query, framer, cached, wordLookup);
+    completeOnce(query, framer, cached, tier);
     return;
   }
-
-  if (!preCheck(query)) return;
 
   let accumulated = "";
   let reasoning = "";
@@ -91,7 +87,7 @@ export async function translate(query: TextTranslateQuery) {
       query,
       framer,
       framer.compose(rawText, reasoning, finishReason),
-      wordLookup,
+      tier,
       finishReason,
     );
   };

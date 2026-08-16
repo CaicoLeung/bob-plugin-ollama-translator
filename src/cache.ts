@@ -1,29 +1,30 @@
 import { TextTranslateQuery } from "@bob-translate/types";
-import { wordDetail } from "./service";
 
 const MAX_RECORDS = 100;
 const records = new Map<string, string>();
 
-function cacheKey(query: TextTranslateQuery, wordLookup: boolean): string {
+function cacheKey(query: TextTranslateQuery, tier?: string): string {
   const base = `${query.from}-${query.to}-${query.text.trim()}`;
-  // The detail tier shapes only word-lookup results (ADR-003 #8) — keep
-  // text-translation entries shared across tiers.
-  return wordLookup ? `${base}-${wordDetail()}` : base;
+  // `query.from/to` (user-selected pair) is deliberate — see AGENTS.md;
+  // don't unify with detectFrom/detectTo. Word-lookup entries carry the
+  // detail tier so switching tiers never serves the other tier's dict;
+  // text-translation entries stay shared across tiers (ADR-003 #8).
+  return tier ? `${base}-${tier}` : base;
 }
 
 export function getCachedResult(
   query: TextTranslateQuery,
-  wordLookup: boolean,
+  tier?: string,
 ): string | null {
-  return records.get(cacheKey(query, wordLookup)) ?? null;
+  return records.get(cacheKey(query, tier)) ?? null;
 }
 
 export function setCachedResult(
   query: TextTranslateQuery,
   value: string,
-  wordLookup: boolean,
+  tier?: string,
 ): void {
-  records.set(cacheKey(query, wordLookup), value);
+  records.set(cacheKey(query, tier), value);
   if (records.size > MAX_RECORDS) {
     const oldest = records.keys().next().value;
     if (oldest) records.delete(oldest);
