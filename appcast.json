@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "9.1.1",
+      "desc": "v9.1.1: 新增 Thinking 思考模式开关\n\n新功能:\n- 新增「Thinking 思考模式」设置（默认关闭）：关闭时模型直接输出结果并隐藏思考过程，开启时完整展示\n- 核心模块深化重构：prompt、result、translate、wordlookup 等模块精简整合，流式输出与思考内容（<think> / reasoning_content）处理更稳健\n- 新增 scripts/check-result.ts 结构自检脚本",
+      "sha256": "2b89d15012affa73878035f96d9aad56d75989c75b3b3835e2c7b18eecbec3cb",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v9.1.1/bob-plugin-ollama-translator-v9.1.1.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "9.1.0",
       "desc": "v9.1.0: 重构单词查询为词典模式 — 单词输入自动返回带发音的词典卡片\n\n词典模式（重构）:\n- 单词输入自动识别，返回 Bob 原生词典卡片（toDict）：音标 + TTS 发音、按词性分组的释义、例句、词源等结构化内容，效果见 README 截图 docs/screenshot/single-word-mode.png\n- 模型输出强制 JSON，解析失败时报错并附原始输出\n- 新增「单词详解档位」设置：快速（仅核心释义）/ 标准（释义+词源用法例句）/ 详尽（词典级全量），默认标准\n- 移除自定义「单词查询 Prompt」选项，词典输出使用固定结构化 Prompt\n\n其他:\n- 重写 README：新增词典/翻译/解释模式效果截图与安装配置说明\n- 最低 Bob 版本提升至 1.15.0（toDict 词典输出所需）",
       "sha256": "7c19a6c9c70ee1822d72c3acef557e2482cf40610007d3a98d66e22eb2994cf7",
