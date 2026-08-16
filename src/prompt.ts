@@ -1,5 +1,5 @@
 import { TextTranslateQuery } from "@bob-translate/types";
-import { thinkingEnabled } from "./service";
+import { thinkingEnabled, pattern } from "./service";
 import {
   systemPrompt as wordSystemPrompt,
   userPrompt as wordUserPrompt,
@@ -24,10 +24,8 @@ const SYSTEM_PROMPTS: Record<string, string> = {
 /** System prompt; word-lookup prompts come from `wordlookup.ts` (the
  *  decision is passed in, not re-derived here). */
 export function generateSystemPrompt(wordLookup: boolean): string {
-  const base = wordLookup
-    ? wordSystemPrompt()
-    : SYSTEM_PROMPTS[$option.pattern || "translate"] || "";
-  return base ? base + (thinkingEnabled() ? "" : NO_THINKING) : base;
+  const base = wordLookup ? wordSystemPrompt() : SYSTEM_PROMPTS[pattern()];
+  return base + (thinkingEnabled() ? "" : NO_THINKING);
 }
 
 function renderTemplate(
@@ -53,16 +51,12 @@ export function generateUserPrompt(
 ): string {
   if (wordLookup) return wordUserPrompt(query);
 
-  const pattern = $option.pattern || "translate";
   const vars = buildTemplateVars(query);
 
-  if (pattern === "translate") {
+  if (pattern() === "translate") {
     return renderTemplate($option.prompt || DEFAULT_TRANSLATE_PROMPT, vars);
   }
 
-  if (pattern === "interpret") {
-    return renderTemplate("简明扼要地解释：{sourceText}", vars);
-  }
-
-  return "";
+  // interpret
+  return renderTemplate("简明扼要地解释：{sourceText}", vars);
 }

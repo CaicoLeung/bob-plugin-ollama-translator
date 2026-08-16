@@ -1,4 +1,5 @@
 import { TextTranslateQuery } from "@bob-translate/types";
+import { pattern } from "./service";
 
 /**
  * Word lookup (glossary): a translate-pattern query whose text is a single
@@ -23,7 +24,7 @@ export function wordDetail(): WordDetail {
 export function isWordLookup(query: TextTranslateQuery): boolean {
   const text = query.text.trim();
   return (
-    ($option.pattern || "translate") === "translate" &&
+    pattern() === "translate" &&
     text.split(" ").length === 1 &&
     /^[a-zA-Z]+$/.test(text)
   );
