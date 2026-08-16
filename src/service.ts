@@ -97,9 +97,9 @@ export function wordDetail(): WordDetail {
     : "medium";
 }
 
-/** `thinking` menu (info.json): "off" asks the model to skip reasoning —
- *  prompt instruction for all providers, plus the documented API switch
- *  for ollama (`think`) and zhipu (`thinking.type`). */
+/** `thinking` menu (info.json): "off" asks the model to skip reasoning.
+ *  Prompt-side instruction only — no provider-specific API switch is sent
+ *  (reasoning models still reason; they just won't show it). */
 export function thinkingEnabled(): boolean {
   return $option.thinking !== "off";
 }
