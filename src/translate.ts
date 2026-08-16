@@ -1,11 +1,16 @@
 import { ServiceError, TextTranslateQuery } from "@bob-translate/types";
 import { handleGeneralError } from "./util";
-import { getApiKey, getServiceUrl, asProvider } from "./service";
+import {
+  getApiKey,
+  getServiceUrl,
+  asProvider,
+  thinkingEnabled,
+} from "./service";
 import { getCachedResult, setCachedResult } from "./cache";
 import { preCheck } from "./precheck";
 import { buildRequestParams } from "./params";
 import { createStreamParser } from "./parser";
-import { DictParseError, parseWordLookup } from "./dict";
+import { DictParseError, parseWordLookup, splitThinkTags } from "./dict";
 
 const FINISH_SUFFIXES: Record<string, string> = {
   length: "\n[翻译被截断：达到最大长度限制]",
@@ -25,7 +30,7 @@ function buildWordResult(query: TextTranslateQuery, text: string) {
   const { toDict, thinkContent } = parseWordLookup(text, query);
   return {
     result: {
-      ...(thinkContent
+      ...(thinkContent && thinkingEnabled()
         ? { thinkInfo: { content: thinkContent, splitThinkTag: false } }
         : {}),
       ...resultShell(query, []),
@@ -39,10 +44,15 @@ function buildTextResult(
   text: string,
   thinkContent = "",
 ) {
+  // `thinking` off: strip any tags that leaked through anyway; the cache
+  // still stores the raw form, so flipping the switch back replays thinking.
+  const { body, think } = thinkingEnabled()
+    ? { body: text, think: thinkContent }
+    : splitThinkTags(text);
   return {
     result: {
-      thinkInfo: { content: thinkContent, splitThinkTag: true },
-      ...resultShell(query, [text]),
+      thinkInfo: { content: think, splitThinkTag: true },
+      ...resultShell(query, [body]),
     },
   };
 }
@@ -127,7 +137,7 @@ export async function translate(query: TextTranslateQuery) {
 
       const { finish_reason, delta } = chunk.choices[0];
       accumulated += delta?.content || "";
-      const deltaReasoning = reasoningDelta(delta);
+      const deltaReasoning = thinkingEnabled() ? reasoningDelta(delta) : "";
       reasoning += deltaReasoning;
 
       if (finish_reason === "stop") {
