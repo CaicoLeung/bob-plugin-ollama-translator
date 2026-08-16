@@ -87,16 +87,6 @@ export function getModel(service: Provider): string {
   return selected === "custom" ? $option[customModel] || "" : selected || "";
 }
 
-/** Word-lookup detail tier (`wordDetail` menu): fast | medium | full.
- *  Shared by prompt construction and the result cache; unknown → medium. */
-export type WordDetail = "fast" | "medium" | "full";
-
-export function wordDetail(): WordDetail {
-  return $option.wordDetail === "fast" || $option.wordDetail === "full"
-    ? $option.wordDetail
-    : "medium";
-}
-
 /** `thinking` menu (info.json): "off" asks the model to skip reasoning.
  *  Prompt-side instruction only — no provider-specific API switch is sent
  *  (reasoning models still reason; they just won't show it). */

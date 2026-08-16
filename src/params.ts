@@ -1,10 +1,7 @@
 import { TextTranslateQuery } from "@bob-translate/types";
-import {
-  generateUserPrompt,
-  generateSystemPrompt,
-  isWordLookup,
-} from "./prompt";
+import { generateUserPrompt, generateSystemPrompt } from "./prompt";
 import { getModel } from "./service";
+import { lookupEnabled } from "./wordlookup";
 import type { Provider } from "./service";
 
 export function buildRequestParams(
@@ -12,15 +9,16 @@ export function buildRequestParams(
   service: Provider,
 ) {
   const finalModel = getModel(service);
-  const isQwenMT = /qwen-mt/.test(finalModel);
-  // qwen-mt models are translation-only (prompt bypassed) — no word lookup.
-  const wordLookup = !isQwenMT && isWordLookup(query);
+  // The single word-lookup decision is made here (query + model meet in
+  // this module) and passed down as a fact — prompts and framing never
+  // re-derive it.
+  const wordLookup = lookupEnabled(query, finalModel);
 
-  const messages = isQwenMT
+  const messages = /qwen-mt/.test(finalModel)
     ? [{ role: "user", content: query.text }]
     : [
-        { role: "system", content: generateSystemPrompt(query) },
-        { role: "user", content: generateUserPrompt(query) },
+        { role: "system", content: generateSystemPrompt(wordLookup) },
+        { role: "user", content: generateUserPrompt(query, wordLookup) },
       ];
 
   return {
