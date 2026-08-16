@@ -30,7 +30,7 @@
 - 多服务支持：Ollama / DeepSeek / OpenAI / Grok / Claude / Gemini / 智谱 / 其他（OpenAI 兼容服务）
 - 每种服务独立配置 API KEY、模型列表与自定义模型
 - 自定义 Prompt、自定义 Base URL
-- 支持 thinking mode
+- Thinking 开关：开启/关闭思考过程展示，关闭后直接输出结果
 
 ## 安装
 
