@@ -48,6 +48,23 @@
       ]
     },
     {
+      "identifier": "thinking",
+      "type": "menu",
+      "title": "Thinking 思考模式",
+      "defaultValue": "off",
+      "desc": "关闭后模型直接输出结果、隐藏思考过程；开启则展示完整思考过程",
+      "menuValues": [
+        {
+          "title": "开启",
+          "value": "on"
+        },
+        {
+          "title": "关闭",
+          "value": "off"
+        }
+      ]
+    },
+    {
       "identifier": "service",
       "type": "menu",
       "title": "服务",

@@ -26,5 +26,6 @@ declare const $option: {
   otherCustomModel?: string;
   pattern?: string;
   wordDetail?: string;
+  thinking?: string;
   prompt?: string;
 };

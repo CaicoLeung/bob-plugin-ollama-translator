@@ -36,7 +36,7 @@ export interface ParsedDict {
  * `<think>` (truncated generation) consumes the rest as reasoning, leaving
  * an empty body — a clean parse failure instead of tag soup in the JSON.
  */
-function splitThinkTags(text: string): { body: string; think: string } {
+export function splitThinkTags(text: string): { body: string; think: string } {
   let think = "";
   const body = text.replace(
     /<think>([\s\S]*?)(?:<\/think>|$)/g,

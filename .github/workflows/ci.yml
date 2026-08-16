@@ -25,6 +25,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - run: npx tsx scripts/check-result.ts
       - run: pnpm exec eslint .
       - run: pnpm exec prettier --check .
       - run: pnpm exec tsc --noEmit

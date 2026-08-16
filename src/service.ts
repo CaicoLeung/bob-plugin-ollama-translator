@@ -87,12 +87,18 @@ export function getModel(service: Provider): string {
   return selected === "custom" ? $option[customModel] || "" : selected || "";
 }
 
-/** Word-lookup detail tier (`wordDetail` menu): fast | medium | full.
- *  Shared by prompt construction and the result cache; unknown → medium. */
-export type WordDetail = "fast" | "medium" | "full";
+/** `pattern` menu (info.json): translate (default) | interpret. The only
+ *  reader — the default and the closed set live here, not at call sites. */
+export type Pattern = "translate" | "interpret";
 
-export function wordDetail(): WordDetail {
-  return $option.wordDetail === "fast" || $option.wordDetail === "full"
-    ? $option.wordDetail
-    : "medium";
+export function pattern(): Pattern {
+  return $option.pattern === "interpret" ? "interpret" : "translate";
+}
+
+/** `thinking` menu (info.json): default off — only an explicit "on"
+ *  opts in, so an absent or unknown value can never re-enable reasoning.
+ *  Prompt-side instruction + display-side hiding — no provider-specific
+ *  API switch is sent (reasoning models still reason internally). */
+export function thinkingEnabled(): boolean {
+  return $option.thinking === "on";
 }
