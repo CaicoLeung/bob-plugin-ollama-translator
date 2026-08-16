@@ -16,10 +16,12 @@ Runtime is Bob's injected JavaScriptCore globals — **no Node APIs, no `fetch`*
 Bob → src/main.ts (exports translate + supportLanguages)
     → src/translate.ts (orchestrator)
         ├─ src/service.ts    resolve provider/url/apikey/model from $option
+        ├─ src/precheck.ts   ALL config validation (base URL/model/language) — before the cache
         ├─ src/cache.ts      in-memory Map, FIFO-evict at 100
-        ├─ src/precheck.ts   validate model/baseUrl/target-language
         ├─ src/params.ts     build chat-completions body (stream:true)
-        │    └─ src/prompt.ts  system/user prompts, {var} templates
+        │    ├─ src/prompt.ts  system/user prompts, {var} templates
+        │    └─ src/wordlookup.ts  word-lookup decision (predicate + qwen-mt exemption), detail tiers, dict prompts
+        ├─ src/result.ts     frame streams/completions (finish suffixes, <think> handling)
         ├─ $http.streamRequest (Bob's HTTP, Bearer auth, SSE)
         └─ src/parser.ts     eventsource-parser → OpenAI chunks
              → query.onStream() per chunk → query.onCompletion() at finish
@@ -32,7 +34,9 @@ Key patterns an assistant must preserve:
 - **Streaming only.** `$http.streamRequest` + `stream: true`; no non-streaming path. `finish_reason` of `stop` or a known suffix completes; anything else keeps streaming. Invalid API keys are detected by regex on stream text (`/Invalid token/i`).
 - **Results always carry `thinkInfo: {content: "", splitThinkTag: true}`** so Bob strips `<think>` reasoning blocks. Word lookup (ADR-003) is the deliberate exception: `thinkInfo` appears only when the model produced reasoning, with `splitThinkTag: false` (tags already stripped in `dict.ts`). Delta-style reasoning (`reasoning_content`/`reasoning` on the chunk delta — DeepSeek R1, QwQ) is captured in `translate.ts`, streamed live via `onStream` frames on both paths, and re-wrapped as a `<think>` block at completion, so both render paths and the cache see one format.
 - **Provider registry is closed.** `Provider` union + `PROVIDERS` + the keyed-literal tables (`SERVICE_BASE_URLS`, `API_KEY_OPTIONS`, `MODEL_OPTIONS`) in `src/service.ts` are the single source of truth; adding a provider means touching those plus `public/info.json` options and `src/types.d.ts` — follow the 5-step checklist in `CLAUDE.md`. `ollama` (keyless) and `other` (user URL) are intentionally asymmetric (`Partial<Record<...>>`).
+- **Word lookup is decided once.** `src/wordlookup.ts` owns the predicate (translate pattern + single English token), the qwen-mt exemption, the `wordDetail` tiers and the JSON dict prompts; `params.ts` calls `lookupEnabled(query, model)` once and passes the boolean down as a fact. Prompts, framing and the cache never re-derive it.
 - **Qwen MT special case**: model name matching `/qwen-mt/` bypasses `prompt.ts` entirely — single user message + `translation_options` instead of prompts. Don't "fix" prompts assuming they always apply.
+- **Config validation has one seam: `preCheck(query, service)`** (`src/precheck.ts`) owns every config check and runs before the cache lookup — the cache never masks a broken config, and `translate.ts` keeps no guards of its own. Error precedence: base URL → custom model → target language.
 - **Cache key uses `query.from`/`query.to`** while the rest of the code uses `detectFrom`/`detectTo` — different fields, don't unify casually.
 - **`langMap` (bob→api codes) is used only for validation** in `precheck.ts`; outgoing prompts/`target_lang` get raw Bob codes.
 
@@ -66,7 +70,7 @@ No lint/format/typecheck entries exist in `package.json` scripts — CI runs the
 - TypeScript strict (`noUnusedLocals`, `noUnusedParameters`, `isolatedModules`), ES2020, emitted CJS for Bob's runtime. Emission happens via `@rollup/plugin-typescript` — `tsc` is typecheck-only.
 - Prettier defaults (2-space, no config file); `.editorconfig` sets `insert_final_newline = false`.
 - Option/config reads go through `$option` with per-provider field names (`openaiModel`, `openaiCustomModel`, `openaiApiKey`, …); the `"custom"` menu sentinel switches to the `*CustomModel` text field (`src/service.ts` `getModel`).
-- Prompt templates: `renderTemplate` regex-replaces `{key}`; the non-word translate prompt is user-overridable via `$option.prompt`. Word lookup (glossary; single English token, auto-detected) uses fixed JSON-demanding prompts built by concatenation (`src/prompt.ts`), tiered by the `wordDetail` menu (`fast|medium|full`, default `medium`) — the tier is also part of the result cache key for word lookups only (`src/cache.ts`); text-translation cache entries are shared across tiers.
+- Prompt templates: `renderTemplate` regex-replaces `{key}`; the non-word translate prompt is user-overridable via `$option.prompt`. Word lookup (glossary; single English token, auto-detected) uses fixed JSON-demanding prompts built by concatenation (`src/wordlookup.ts`), tiered by the `wordDetail` menu (`fast|medium|full`, default `medium`) — the tier is also part of the result cache key for word lookups only; text-translation cache entries are shared across tiers.
 - Domain vocabulary is fixed in `docs/glossary.md` (Provider, Model, Menu value, Refresh, …) — use it in issues/commits/refactors; don't drift to synonyms.
 - **ADR-001: model menu refresh is additive-only** — never remove/rewrite existing `menuValues` in `public/info.json`; append only. Removing entries breaks stored user selections (Bob persists by string). `defaultValue` changes need a separate decision.
 
@@ -78,6 +82,9 @@ No lint/format/typecheck entries exist in `package.json` scripts — CI runs the
 | `src/translate.ts`                | Orchestrator: streaming, completion, error reporting                                    |
 | `src/service.ts`                  | Provider registry + `$option` readers                                                   |
 | `src/params.ts` / `src/prompt.ts` | Request body + prompt construction                                                      |
+| `src/wordlookup.ts`               | Word-lookup decision, detail tiers, dict prompts (ADR-003)                              |
+| `src/result.ts`                   | Result framing: stream frames, finish suffixes, `<think>` handling                      |
+| `src/dict.ts`                     | Dict JSON parse → Bob `toDict` (ADR-003)                                                |
 | `src/parser.ts`                   | SSE parsing (`eventsource-parser`; `openai` pkg is type-only)                           |
 | `src/types.d.ts`                  | Ambient `$option` declaration — update when adding options                              |
 | `public/info.json`                | Bob manifest, plugin version, settings UI                                               |
