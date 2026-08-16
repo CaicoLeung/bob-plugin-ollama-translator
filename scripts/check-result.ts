@@ -7,6 +7,13 @@ import assert from "node:assert/strict";
 import { TextTranslateQuery } from "@bob-translate/types";
 import { createResultFramer, isFinishWithSuffix } from "../src/result";
 import { DictParseError } from "../src/dict";
+import { isWordLookup, lookupEnabled } from "../src/wordlookup";
+import { preCheck } from "../src/precheck";
+
+// `wordlookup.ts` reads the ambient `$option` at call time — stub it.
+(globalThis as { $option?: Record<string, string> }).$option = {
+  pattern: "translate",
+};
 
 const query = {
   text: "hello",
@@ -76,5 +83,55 @@ assert.equal(dictPayload.result.thinkInfo.content, "why");
 assert.equal(dictPayload.result.thinkInfo.splitThinkTag, false);
 // parse failure is a hard error carrying the raw output
 assert.throws(() => word.payload("not json"), DictParseError);
+
+// --- word-lookup decision ---------------------------------------------------
+// Text shape: single English token on the translate pattern.
+assert.equal(isWordLookup(query), true);
+assert.equal(isWordLookup({ ...query, text: "hello world" }), false);
+assert.equal(isWordLookup({ ...query, text: "don't" }), false);
+assert.equal(isWordLookup({ ...query, text: "你好" }), false);
+(globalThis as { $option?: Record<string, string> }).$option = {
+  pattern: "interpret",
+};
+assert.equal(isWordLookup(query), false); // interpret never word-looks-up
+(globalThis as { $option?: Record<string, string> }).$option = {
+  pattern: "translate",
+};
+// qwen-mt exemption: translation-only models never word-look-up.
+assert.equal(lookupEnabled(query, "qwen-mt-turbo"), false);
+assert.equal(lookupEnabled(query, "qwen2.5:14b"), true);
+assert.equal(lookupEnabled({ ...query, text: "hello world" }, "gpt-5"), false);
+
+// --- config-validation seam ---------------------------------------------------
+// preCheck's interface: (query, service) → boolean, routing the error through
+// query.onCompletion. Stub $option and record completions.
+const completions: Array<{ error?: { type?: string; message?: string } }> = [];
+const vq = {
+  ...query,
+  onCompletion: (e: unknown) =>
+    completions.push(e as { error?: { type?: string; message?: string } }),
+} as unknown as TextTranslateQuery;
+// `other` with no baseUrl → the single base-URL condition.
+assert.equal(preCheck(vq, "other"), false);
+assert.equal(completions[0].error?.type, "param");
+assert.ok(completions[0].error?.message?.includes("Base URL"));
+// Custom menu with empty custom model → model error.
+(globalThis as { $option?: Record<string, string> }).$option = {
+  ollamaModel: "custom",
+};
+assert.equal(preCheck(vq, "ollama"), false);
+assert.ok(completions[1].error?.message?.includes("自定义模型名称"));
+// Valid config → true, no completion fired.
+(globalThis as { $option?: Record<string, string> }).$option = {
+  ollamaModel: "llama3",
+};
+assert.equal(preCheck(vq, "ollama"), true);
+assert.equal(completions.length, 2);
+// Unsupported target language → unsupportedLanguage.
+assert.equal(
+  preCheck({ ...vq, detectTo: "klingon" } as TextTranslateQuery, "ollama"),
+  false,
+);
+assert.equal(completions[2].error?.type, "unsupportedLanguage");
 
 console.log("check-result: all assertions passed");
