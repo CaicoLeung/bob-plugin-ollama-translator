@@ -87,6 +87,14 @@ export function getModel(service: Provider): string {
   return selected === "custom" ? $option[customModel] || "" : selected || "";
 }
 
+/** `pattern` menu (info.json): translate (default) | interpret. The only
+ *  reader — the default and the closed set live here, not at call sites. */
+export type Pattern = "translate" | "interpret";
+
+export function pattern(): Pattern {
+  return $option.pattern === "interpret" ? "interpret" : "translate";
+}
+
 /** `thinking` menu (info.json): "off" asks the model to skip reasoning.
  *  Prompt-side instruction only — no provider-specific API switch is sent
  *  (reasoning models still reason; they just won't show it). */

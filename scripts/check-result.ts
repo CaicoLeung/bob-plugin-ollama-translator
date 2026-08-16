@@ -9,6 +9,7 @@ import { createResultFramer, isFinishWithSuffix } from "../src/result";
 import { DictParseError } from "../src/dict";
 import { isWordLookup, lookupEnabled } from "../src/wordlookup";
 import { preCheck } from "../src/precheck";
+import { pattern } from "../src/service";
 
 // `wordlookup.ts` reads the ambient `$option` at call time — stub it.
 (globalThis as { $option?: Record<string, string> }).$option = {
@@ -133,5 +134,23 @@ assert.equal(
   false,
 );
 assert.equal(completions[2].error?.type, "unsupportedLanguage");
+
+// --- pattern reader --------------------------------------------------------
+// Garbage/absent → translate; interpret passes through. The default is
+// interface knowledge of the reader alone.
+(globalThis as { $option?: Record<string, string> }).$option = {};
+assert.equal(pattern(), "translate");
+(globalThis as { $option?: Record<string, string> }).$option = {
+  pattern: "garbage",
+};
+assert.equal(pattern(), "translate");
+(globalThis as { $option?: Record<string, string> }).$option = {
+  pattern: "interpret",
+};
+assert.equal(pattern(), "interpret");
+// restore for any later reads
+(globalThis as { $option?: Record<string, string> }).$option = {
+  pattern: "translate",
+};
 
 console.log("check-result: all assertions passed");
