@@ -1,5 +1,5 @@
 import { TextTranslateQuery } from "@bob-translate/types";
-import { wordDetail, type WordDetail } from "./service";
+import { thinkingEnabled, wordDetail, type WordDetail } from "./service";
 
 // Fixed (non-user-overridable): word lookup must return Bob's toDict JSON.
 // Built via concatenation, not `renderTemplate` — the literal JSON braces
@@ -86,6 +86,13 @@ const WORD_DETAIL: Record<
 const DEFAULT_TRANSLATE_PROMPT =
   "Translate the following text to {targetLang}: {sourceText}";
 
+/** `thinking` menu off: appended to every system prompt (qwen-mt bypasses
+ *  prompts entirely — thinking isn't a thing there). Belt to the API-level
+ *  switches in `params.ts`: DeepSeek-R1-style models that must reason still
+ *  do, they just won't show it. */
+const NO_THINKING =
+  " Do not reason step by step and never output <think> blocks — provide the final answer only.";
+
 const SYSTEM_PROMPTS: Record<string, (isWord: boolean) => string> = {
   translate: (isWord) =>
     isWord
@@ -94,6 +101,12 @@ const SYSTEM_PROMPTS: Record<string, (isWord: boolean) => string> = {
   interpret: () =>
     "You are now a knowledgeable encyclopedia expert who can provide detailed information and explanations in various fields. Whether it is science, history, technology or culture, you can answer questions in a simple and easy-to-understand way and cite relevant materials and examples to help you understand.",
 };
+
+export function generateSystemPrompt(query: TextTranslateQuery): string {
+  const builder = SYSTEM_PROMPTS[$option.pattern || "translate"];
+  const base = builder ? builder(isWordLookup(query)) : "";
+  return base ? base + (thinkingEnabled() ? "" : NO_THINKING) : base;
+}
 
 /** Word lookup (glossary): translate pattern + single English token. */
 export function isWordLookup(query: TextTranslateQuery): boolean {
@@ -137,9 +150,4 @@ export function generateUserPrompt(query: TextTranslateQuery): string {
   }
 
   return "";
-}
-
-export function generateSystemPrompt(query: TextTranslateQuery): string {
-  const builder = SYSTEM_PROMPTS[$option.pattern || "translate"];
-  return builder ? builder(isWordLookup(query)) : "";
 }
