@@ -1,9 +1,10 @@
 import { TextTranslateQuery } from "@bob-translate/types";
+import type { WordDetail } from "./wordlookup";
 
 const MAX_RECORDS = 100;
 const records = new Map<string, string>();
 
-function cacheKey(query: TextTranslateQuery, tier?: string): string {
+function cacheKey(query: TextTranslateQuery, tier?: WordDetail): string {
   const base = `${query.from}-${query.to}-${query.text.trim()}`;
   // `query.from/to` (user-selected pair) is deliberate — see AGENTS.md;
   // don't unify with detectFrom/detectTo. Word-lookup entries carry the
@@ -14,7 +15,7 @@ function cacheKey(query: TextTranslateQuery, tier?: string): string {
 
 export function getCachedResult(
   query: TextTranslateQuery,
-  tier?: string,
+  tier?: WordDetail,
 ): string | null {
   return records.get(cacheKey(query, tier)) ?? null;
 }
@@ -22,7 +23,7 @@ export function getCachedResult(
 export function setCachedResult(
   query: TextTranslateQuery,
   value: string,
-  tier?: string,
+  tier?: WordDetail,
 ): void {
   records.set(cacheKey(query, tier), value);
   if (records.size > MAX_RECORDS) {

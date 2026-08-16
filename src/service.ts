@@ -95,9 +95,10 @@ export function pattern(): Pattern {
   return $option.pattern === "interpret" ? "interpret" : "translate";
 }
 
-/** `thinking` menu (info.json): "off" asks the model to skip reasoning.
- *  Prompt-side instruction only — no provider-specific API switch is sent
- *  (reasoning models still reason; they just won't show it). */
+/** `thinking` menu (info.json): default off — only an explicit "on"
+ *  opts in, so an absent or unknown value can never re-enable reasoning.
+ *  Prompt-side instruction + display-side hiding — no provider-specific
+ *  API switch is sent (reasoning models still reason internally). */
 export function thinkingEnabled(): boolean {
-  return $option.thinking !== "off";
+  return $option.thinking === "on";
 }

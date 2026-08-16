@@ -43,7 +43,8 @@ function resultShell(query: TextTranslateQuery, toParagraphs: string[]) {
 }
 
 export interface FramerOptions {
-  /** `thinking` menu read once by the caller (`service.thinkingEnabled`). */
+  /** `thinking` menu fact, resolved once in `params.ts`. Display-side only:
+   *  capture always runs, rendering hides reasoning when off. */
   thinking: boolean;
   /** qwen-mt-gated word-lookup decision, computed once in `params.ts`. */
   wordLookup: boolean;
@@ -69,23 +70,32 @@ export function createResultFramer(
   };
 
   const textResult = (composed: string, think = "") => {
-    // `thinking` off: strip any tags that leaked through anyway; the cache
-    // still stores the raw form, so flipping the switch back replays thinking.
-    const { body, think: split } = thinking
-      ? { body: composed, think }
-      : splitThinkTags(composed);
+    // Display-side toggle: off strips leaked tags from the body and hides
+    // thinkInfo entirely. Capture/compose stay unconditional, so the cache
+    // stores the full form and re-enabling replays thinking — inline tags
+    // and captured reasoning deltas alike.
+    if (!thinking) {
+      const { body } = splitThinkTags(composed);
+      return {
+        result: {
+          thinkInfo: { content: "", splitThinkTag: true },
+          ...resultShell(query, [body]),
+        },
+      };
+    }
     return {
       result: {
-        thinkInfo: { content: split, splitThinkTag: true },
-        ...resultShell(query, [body]),
+        thinkInfo: { content: think, splitThinkTag: true },
+        ...resultShell(query, [composed]),
       },
     };
   };
 
   return {
-    /** Thinking toggle gates capture: off means reasoning deltas drop. */
+    /** Capture is unconditional — the toggle is display-side, so the
+     *  cache always stores the full form (replay works after re-enabling). */
     captureReasoning(delta: unknown): string {
-      return thinking ? reasoningDelta(delta) : "";
+      return reasoningDelta(delta);
     },
 
     /** Stream frame for a mid-generation chunk. Word lookup: reasoning
@@ -94,9 +104,10 @@ export function createResultFramer(
     streamFrame(accumulated: string, reasoning: string, hasNew: boolean) {
       // Live text frames carry streamed reasoning in thinkInfo; word
       // lookup renders reasoning only — the dict can't render until the
-      // full JSON arrives (ADR-003 #4); null = skip the frame.
+      // full JSON arrives (ADR-003 #4); null = skip the frame. The
+      // thinking-off case hides reasoning on both paths.
       if (!wordLookup) return textResult(accumulated, reasoning);
-      return hasNew
+      return hasNew && thinking
         ? {
             result: {
               thinkInfo: { content: reasoning, splitThinkTag: false },

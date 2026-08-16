@@ -1,8 +1,9 @@
 import { TextTranslateQuery } from "@bob-translate/types";
-import { thinkingEnabled, pattern } from "./service";
+import { pattern, type Pattern } from "./service";
 import {
   systemPrompt as wordSystemPrompt,
   userPrompt as wordUserPrompt,
+  type WordDetail,
 } from "./wordlookup";
 
 const DEFAULT_TRANSLATE_PROMPT =
@@ -14,7 +15,7 @@ const DEFAULT_TRANSLATE_PROMPT =
 const NO_THINKING =
   " Do not reason step by step and never output <think> blocks — provide the final answer only.";
 
-const SYSTEM_PROMPTS: Record<string, string> = {
+const SYSTEM_PROMPTS: Record<Pattern, string> = {
   translate:
     "You are a translation engine, translate directly without explanation and any explanatory content",
   interpret:
@@ -22,10 +23,14 @@ const SYSTEM_PROMPTS: Record<string, string> = {
 };
 
 /** System prompt; word-lookup prompts come from `wordlookup.ts` (the
- *  decision is passed in, not re-derived here). */
-export function generateSystemPrompt(wordLookup: boolean): string {
-  const base = wordLookup ? wordSystemPrompt() : SYSTEM_PROMPTS[pattern()];
-  return base + (thinkingEnabled() ? "" : NO_THINKING);
+ *  decision arrives as the resolved `tier` fact — undefined = text path).
+ *  `thinking` likewise arrives as a fact from `params.ts`. */
+export function generateSystemPrompt(
+  tier: WordDetail | undefined,
+  thinking: boolean,
+): string {
+  const base = tier ? wordSystemPrompt(tier) : SYSTEM_PROMPTS[pattern()];
+  return base + (thinking ? "" : NO_THINKING);
 }
 
 function renderTemplate(
@@ -47,9 +52,9 @@ function buildTemplateVars(query: TextTranslateQuery): Record<string, string> {
 
 export function generateUserPrompt(
   query: TextTranslateQuery,
-  wordLookup: boolean,
+  tier: WordDetail | undefined,
 ): string {
-  if (wordLookup) return wordUserPrompt(query);
+  if (tier) return wordUserPrompt(query, tier);
 
   const vars = buildTemplateVars(query);
 

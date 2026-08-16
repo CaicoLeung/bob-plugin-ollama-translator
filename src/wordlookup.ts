@@ -30,13 +30,20 @@ export function isWordLookup(query: TextTranslateQuery): boolean {
   );
 }
 
+/** qwen-mt models are translation-only: params.ts bypasses prompts for
+ *  them and the word-lookup decision exempts them — one predicate, both
+ *  call sites (AGENTS.md documents this as a single concept). */
+export function isQwenMT(model: string): boolean {
+  return /qwen-mt/.test(model);
+}
+
 /** The one word-lookup decision: text shape AND a model that supports it —
  *  qwen-mt models are translation-only (prompts bypassed, no dict output). */
 export function lookupEnabled(
   query: TextTranslateQuery,
   model: string,
 ): boolean {
-  return !/qwen-mt/.test(model) && isWordLookup(query);
+  return !isQwenMT(model) && isWordLookup(query);
 }
 
 // ---- tier prompts ----------------------------------------------------------
@@ -115,12 +122,17 @@ const WORD_DETAIL: Record<
   },
 };
 
-export function systemPrompt(): string {
-  return WORD_DETAIL[wordDetail()].system;
+/** Tier prompts are pure: callers resolve the tier once via `wordDetail()`
+ *  and pass it down — no ambient `$option` reads here. */
+export function systemPrompt(tier: WordDetail): string {
+  return WORD_DETAIL[tier].system;
 }
 
-export function userPrompt(query: TextTranslateQuery): string {
+export function userPrompt(
+  query: TextTranslateQuery,
+  tier: WordDetail,
+): string {
   const word = query.text.trim();
   const target = `All explanatory text must be written in ${query.detectTo}.`;
-  return WORD_DETAIL[wordDetail()].prompt(word, target);
+  return WORD_DETAIL[tier].prompt(word, target);
 }

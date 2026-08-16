@@ -1,27 +1,23 @@
 import { ServiceError, TextTranslateQuery } from "@bob-translate/types";
 import { handleGeneralError } from "./util";
-import {
-  getApiKey,
-  getServiceUrl,
-  asProvider,
-  thinkingEnabled,
-} from "./service";
+import { getApiKey, getServiceUrl, asProvider } from "./service";
 import { getCachedResult, setCachedResult } from "./cache";
 import { preCheck } from "./precheck";
 import { buildRequestParams } from "./params";
 import { createStreamParser } from "./parser";
 import { DictParseError } from "./dict";
 import { createResultFramer, isFinishWithSuffix } from "./result";
-import { wordDetail } from "./wordlookup";
+import type { WordDetail } from "./wordlookup";
 
 /** Delivery: render the composed text through the result framer, cache only
  *  successful results, and surface parse failures as errors carrying the raw
- *  model output (ADR-003). Cache hits replay through the same framer. */
-function completeOnce(
+ *  model output (ADR-003). Cache hits replay through the same framer. The
+ *  once-only guard lives in the `complete` closure below. */
+function deliver(
   query: TextTranslateQuery,
   framer: ReturnType<typeof createResultFramer>,
   composed: string,
-  tier?: string,
+  tier: WordDetail | undefined,
   finishReason?: string,
 ) {
   try {
@@ -62,17 +58,17 @@ export async function translate(query: TextTranslateQuery) {
 
   const url = getServiceUrl(service);
   const apiKey = getApiKey(service);
-  const { params, wordLookup } = buildRequestParams(query, service);
-  const framer = createResultFramer(query, {
-    thinking: thinkingEnabled(),
-    wordLookup,
-  });
-  // ADR-003 #8: only word-lookup entries are keyed by detail tier.
-  const tier = wordLookup ? wordDetail() : undefined;
+  // All option-derived facts (wordLookup, tier, thinking) resolve once
+  // inside buildRequestParams and flow down from here.
+  const { params, wordLookup, tier, thinking } = buildRequestParams(
+    query,
+    service,
+  );
+  const framer = createResultFramer(query, { thinking, wordLookup });
 
   const cached = getCachedResult(query, tier);
   if (cached !== null) {
-    completeOnce(query, framer, cached, tier);
+    deliver(query, framer, cached, tier);
     return;
   }
 
@@ -83,7 +79,7 @@ export async function translate(query: TextTranslateQuery) {
   const complete = (rawText: string, finishReason?: string) => {
     if (completed) return;
     completed = true;
-    completeOnce(
+    deliver(
       query,
       framer,
       framer.compose(rawText, reasoning, finishReason),

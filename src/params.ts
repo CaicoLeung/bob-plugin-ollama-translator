@@ -1,7 +1,7 @@
 import { TextTranslateQuery } from "@bob-translate/types";
 import { generateUserPrompt, generateSystemPrompt } from "./prompt";
-import { getModel } from "./service";
-import { lookupEnabled } from "./wordlookup";
+import { getModel, thinkingEnabled } from "./service";
+import { lookupEnabled, wordDetail, isQwenMT } from "./wordlookup";
 import type { Provider } from "./service";
 
 export function buildRequestParams(
@@ -9,22 +9,26 @@ export function buildRequestParams(
   service: Provider,
 ) {
   const finalModel = getModel(service);
-  // The single word-lookup decision is made here (query + model meet in
-  // this module) and passed down as a fact — prompts and framing never
-  // re-derive it.
+  // Every option-derived decision is resolved once here — where query,
+  // model and $option meet — and returned as facts: prompts, framing and
+  // the cache never re-derive any of them.
   const wordLookup = lookupEnabled(query, finalModel);
+  const tier = wordLookup ? wordDetail() : undefined;
+  const thinking = thinkingEnabled();
 
-  const messages = /qwen-mt/.test(finalModel)
+  const messages = isQwenMT(finalModel)
     ? [{ role: "user", content: query.text }]
     : [
-        { role: "system", content: generateSystemPrompt(wordLookup) },
-        { role: "user", content: generateUserPrompt(query, wordLookup) },
+        { role: "system", content: generateSystemPrompt(tier, thinking) },
+        { role: "user", content: generateUserPrompt(query, tier) },
       ];
 
   return {
+    wordLookup,
+    tier,
+    thinking,
     // JSON mode is honored by most providers and ignored by Claude's compat
     // layer — the prompt itself also demands JSON (ADR-003 belt & suspenders).
-    wordLookup,
     params: {
       stream: true,
       model: finalModel,
