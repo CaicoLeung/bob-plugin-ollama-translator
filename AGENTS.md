@@ -72,7 +72,7 @@ No lint/format/typecheck entries exist in `package.json` scripts — CI runs the
 - Option/config reads go through `$option` with per-provider field names (`openaiModel`, `openaiCustomModel`, `openaiApiKey`, …); the `"custom"` menu sentinel switches to the `*CustomModel` text field (`src/service.ts` `getModel`).
 - Prompt templates: `renderTemplate` regex-replaces `{key}`; the non-word translate prompt is user-overridable via `$option.prompt`. Word lookup (glossary; single English token, auto-detected) uses fixed JSON-demanding prompts built by concatenation (`src/wordlookup.ts`), tiered by the `wordDetail` menu (`fast|medium|full`, default `medium`) — the tier is also part of the result cache key for word lookups only; text-translation cache entries are shared across tiers.
 - Domain vocabulary is fixed in `docs/glossary.md` (Provider, Model, Menu value, Refresh, …) — use it in issues/commits/refactors; don't drift to synonyms.
-- **ADR-001: model menu refresh is additive-only** — never remove/rewrite existing `menuValues` in `public/info.json`; append only. Removing entries breaks stored user selections (Bob persists by string). `defaultValue` changes need a separate decision.
+- **ADR-001 + ADR-004: model menus current-generation-only** — refreshes are additive-only (never remove/rewrite existing `menuValues` in `public/info.json`); cuts of pre-current generations happen only via an explicit ADR (ADR-004, 2026-10-10) and change `defaultValue` in the same commit. Removing entries breaks stored user selections (Bob persists by string).
 
 ## Important Files
 
