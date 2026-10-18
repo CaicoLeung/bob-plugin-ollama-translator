@@ -148,6 +148,22 @@
           "value": "qwen3:32b"
         },
         {
+          "title": "qwen3.5:9b",
+          "value": "qwen3.5:9b"
+        },
+        {
+          "title": "qwen3.5:27b",
+          "value": "qwen3.5:27b"
+        },
+        {
+          "title": "qwen3.6:27b",
+          "value": "qwen3.6:27b"
+        },
+        {
+          "title": "qwen3.8:27b",
+          "value": "qwen3.8:27b"
+        },
+        {
           "title": "gemma3:4b",
           "value": "gemma3:4b"
         },
@@ -160,12 +176,24 @@
           "value": "gemma3:27b"
         },
         {
+          "title": "gemma4:12b",
+          "value": "gemma4:12b"
+        },
+        {
+          "title": "gemma4:26b",
+          "value": "gemma4:26b"
+        },
+        {
           "title": "llama3:8b",
           "value": "llama3:8b"
         },
         {
           "title": "llama3.3:70b",
           "value": "llama3.3:70b"
+        },
+        {
+          "title": "llama4:16x17b",
+          "value": "llama4:16x17b"
         },
         {
           "title": "mistral:7b",
@@ -212,7 +240,7 @@
       "identifier": "deepseekModel",
       "type": "menu",
       "title": "DeepSeek 模型",
-      "defaultValue": "deepseek-v4-flash",
+      "defaultValue": "deepseek-flash",
       "desc": "选择 DeepSeek 模型",
       "menuValues": [
         {
@@ -220,12 +248,12 @@
           "value": "custom"
         },
         {
-          "title": "deepseek-v4-pro",
-          "value": "deepseek-v4-pro"
+          "title": "deepseek-flash",
+          "value": "deepseek-flash"
         },
         {
-          "title": "deepseek-v4-flash",
-          "value": "deepseek-v4-flash"
+          "title": "deepseek-v4-pro",
+          "value": "deepseek-v4-pro"
         }
       ]
     },
@@ -252,7 +280,7 @@
       "identifier": "openaiModel",
       "type": "menu",
       "title": "OpenAI 模型",
-      "defaultValue": "gpt-5-mini",
+      "defaultValue": "gpt-6-luna",
       "desc": "选择 OpenAI 模型",
       "menuValues": [
         {
@@ -260,60 +288,16 @@
           "value": "custom"
         },
         {
-          "title": "gpt-5.6-sol",
-          "value": "gpt-5.6-sol"
+          "title": "gpt-6-astra",
+          "value": "gpt-6-astra"
         },
         {
-          "title": "gpt-5.6-terra",
-          "value": "gpt-5.6-terra"
+          "title": "gpt-6.1-sol",
+          "value": "gpt-6.1-sol"
         },
         {
-          "title": "gpt-5.6-luna",
-          "value": "gpt-5.6-luna"
-        },
-        {
-          "title": "gpt-5.5",
-          "value": "gpt-5.5"
-        },
-        {
-          "title": "gpt-5.4-mini",
-          "value": "gpt-5.4-mini"
-        },
-        {
-          "title": "gpt-5.4-nano",
-          "value": "gpt-5.4-nano"
-        },
-        {
-          "title": "gpt-5",
-          "value": "gpt-5"
-        },
-        {
-          "title": "gpt-5-mini",
-          "value": "gpt-5-mini"
-        },
-        {
-          "title": "gpt-5-nano",
-          "value": "gpt-5-nano"
-        },
-        {
-          "title": "gpt-4.1",
-          "value": "gpt-4.1"
-        },
-        {
-          "title": "gpt-4.1-mini",
-          "value": "gpt-4.1-mini"
-        },
-        {
-          "title": "gpt-4.1-nano",
-          "value": "gpt-4.1-nano"
-        },
-        {
-          "title": "gpt-4o",
-          "value": "gpt-4o"
-        },
-        {
-          "title": "gpt-4o-mini",
-          "value": "gpt-4o-mini"
+          "title": "gpt-6-luna",
+          "value": "gpt-6-luna"
         }
       ]
     },
@@ -348,20 +332,16 @@
           "value": "custom"
         },
         {
+          "title": "grok-4.7",
+          "value": "grok-4.7"
+        },
+        {
+          "title": "grok-4.6",
+          "value": "grok-4.6"
+        },
+        {
           "title": "grok-4.5",
           "value": "grok-4.5"
-        },
-        {
-          "title": "grok-4.3",
-          "value": "grok-4.3"
-        },
-        {
-          "title": "grok-4.20-0309-reasoning",
-          "value": "grok-4.20-0309-reasoning"
-        },
-        {
-          "title": "grok-build-0.1",
-          "value": "grok-build-0.1"
         }
       ]
     },
@@ -388,7 +368,7 @@
       "identifier": "claudeModel",
       "type": "menu",
       "title": "Claude 模型",
-      "defaultValue": "claude-sonnet-5",
+      "defaultValue": "claude-sonnet-5-5",
       "desc": "选择 Claude 模型",
       "menuValues": [
         {
@@ -396,28 +376,20 @@
           "value": "custom"
         },
         {
-          "title": "claude-fable-5",
-          "value": "claude-fable-5"
+          "title": "claude-fable-5-1",
+          "value": "claude-fable-5-1"
         },
         {
-          "title": "claude-opus-5",
-          "value": "claude-opus-5"
+          "title": "claude-opus-5-5",
+          "value": "claude-opus-5-5"
         },
         {
-          "title": "claude-sonnet-5",
-          "value": "claude-sonnet-5"
+          "title": "claude-sonnet-5-5",
+          "value": "claude-sonnet-5-5"
         },
         {
-          "title": "claude-haiku-4-5",
-          "value": "claude-haiku-4-5"
-        },
-        {
-          "title": "claude-opus-4-8",
-          "value": "claude-opus-4-8"
-        },
-        {
-          "title": "claude-opus-4-7",
-          "value": "claude-opus-4-7"
+          "title": "claude-haiku-5-5",
+          "value": "claude-haiku-5-5"
         }
       ]
     },
@@ -444,7 +416,7 @@
       "identifier": "geminiModel",
       "type": "menu",
       "title": "Gemini 模型",
-      "defaultValue": "gemini-3.5-flash",
+      "defaultValue": "gemini-3.8-flash",
       "desc": "选择 Gemini 模型",
       "menuValues": [
         {
@@ -452,12 +424,12 @@
           "value": "custom"
         },
         {
-          "title": "gemini-3.6-flash",
-          "value": "gemini-3.6-flash"
+          "title": "gemini-3.8-flash",
+          "value": "gemini-3.8-flash"
         },
         {
-          "title": "gemini-3.5-flash",
-          "value": "gemini-3.5-flash"
+          "title": "gemini-3.6-flash",
+          "value": "gemini-3.6-flash"
         },
         {
           "title": "gemini-3.5-flash-lite",
@@ -470,18 +442,6 @@
         {
           "title": "gemini-3.1-pro-preview",
           "value": "gemini-3.1-pro-preview"
-        },
-        {
-          "title": "gemini-2.5-pro",
-          "value": "gemini-2.5-pro"
-        },
-        {
-          "title": "gemini-2.5-flash",
-          "value": "gemini-2.5-flash"
-        },
-        {
-          "title": "gemini-2.5-flash-lite",
-          "value": "gemini-2.5-flash-lite"
         }
       ]
     },
@@ -516,40 +476,20 @@
           "value": "custom"
         },
         {
+          "title": "glm-5.3",
+          "value": "glm-5.3"
+        },
+        {
+          "title": "glm-5.3-flash",
+          "value": "glm-5.3-flash"
+        },
+        {
+          "title": "glm-5.3-flashx",
+          "value": "glm-5.3-flashx"
+        },
+        {
           "title": "glm-5.2",
           "value": "glm-5.2"
-        },
-        {
-          "title": "glm-5.1",
-          "value": "glm-5.1"
-        },
-        {
-          "title": "glm-5",
-          "value": "glm-5"
-        },
-        {
-          "title": "glm-5-turbo",
-          "value": "glm-5-turbo"
-        },
-        {
-          "title": "glm-4.7",
-          "value": "glm-4.7"
-        },
-        {
-          "title": "glm-4.7-flash",
-          "value": "glm-4.7-flash"
-        },
-        {
-          "title": "glm-4.7-flashx",
-          "value": "glm-4.7-flashx"
-        },
-        {
-          "title": "glm-4.6",
-          "value": "glm-4.6"
-        },
-        {
-          "title": "glm-4.5-air",
-          "value": "glm-4.5-air"
         }
       ]
     },
