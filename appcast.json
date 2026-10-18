@@ -2,6 +2,13 @@
   "identifier": "bob-plugin-ollama-translator",
   "versions": [
     {
+      "version": "9.1.2",
+      "desc": "chore(models): 按 ADR-004 裁剪非当前世代模型并刷新菜单",
+      "sha256": "4a6c58ba4e8e0e9cc60fb97d41d5832816d60f61a2801249a6e51b6f193ac99b",
+      "url": "https://github.com/CaicoLeung/bob-plugin-ollama-translator/releases/download/v9.1.2/bob-plugin-ollama-translator-v9.1.2.bobplugin",
+      "minBobVersion": "1.8.0"
+    },
+    {
       "version": "9.1.1",
       "desc": "v9.1.1: 新增 Thinking 思考模式开关\n\n新功能:\n- 新增「Thinking 思考模式」设置（默认关闭）：关闭时模型直接输出结果并隐藏思考过程，开启时完整展示\n- 核心模块深化重构：prompt、result、translate、wordlookup 等模块精简整合，流式输出与思考内容（<think> / reasoning_content）处理更稳健\n- 新增 scripts/check-result.ts 结构自检脚本",
       "sha256": "2b89d15012affa73878035f96d9aad56d75989c75b3b3835e2c7b18eecbec3cb",
